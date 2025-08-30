@@ -45,10 +45,12 @@ const appConfig = {
   accounts: {
     groomSide: [
       { label: "아버지 강복진", bank: "농협", number: "485058-52-169858" },
+      { label: "어머니 김금산", bank: "농협", number: "485058-52-169858" },
       { label: "신랑 강명준", bank: "국민은행", number: "012502-04-588075" },
     ],
     brideSide: [
       { label: "아버지 권용덕", bank: "우리은행", number: "080-151155-02-001" },
+      { label: "어머니 이선애", bank: "우리은행", number: "080-151155-02-001" },
       { label: "신부 권소영", bank: "카카오뱅크", number: "3333-28-1837834" },
     ],
   },
