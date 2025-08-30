@@ -11,10 +11,12 @@ import Location from './components/Location'
 import ThanksTo from './components/ThanksTo'
 import Guestbook from './components/Guestbook'
 import Share from './components/Share'
+import RSVPDialog from './components/RSVPDialog'
 
 function App() {
   return (
     <Stack>
+      <RSVPDialog />
       <Hero />
 
       <Section id="intro">
