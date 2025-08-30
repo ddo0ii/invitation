@@ -16,7 +16,8 @@
     "@mui/material": "^7.3.1",
     "dayjs": "^1.11.18",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "react-kakao-maps-sdk": "^1.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",

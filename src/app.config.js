@@ -5,6 +5,7 @@ const appConfig = {
     dateTime: "2025-12-06T12:00:00+09:00",
     venue: "페어몬트 앰배서더 서울",
     address: "서울 영등포구 여의대로 108",
+    mapAddress: "서울 영등포구 여의대로 108 페어몬트 앰배서더 서울 호텔",
   },
   couple: {
     groom: { name: "강명준", father: "강복진", mother: "김금산" },
@@ -36,6 +37,8 @@ const appConfig = {
       "광역: 8600, 8601",
     ],
     etc: ["여의도 현대백화점 1층 Gate 4번 출구 연결"],
+    // 좌표가 있으면 바로 사용하고, 없으면 주소로 지오코딩합니다.
+    coords: { lat: 37.525, lng: 126.872 },
     mapLinks: {
       naver: "https://naver.me/5ojUMFJP",
       kakaoNavi: "kakaonavi://navigate?name=로프트가든344&x=126.872&y=37.525",
