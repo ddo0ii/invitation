@@ -7,7 +7,7 @@ function Hero() {
       sx={{
         position: 'relative',
         py: { xs: 8, md: 12 },
-        minHeight: { xs: '60vh', md: '70vh' },
+        minHeight: { xs: '100vh', md: '110vh' },
         overflow: 'hidden',
       }}
     >
@@ -25,32 +25,34 @@ function Hero() {
           width: '100%',
           height: '100%',
           objectFit: 'cover',
+          // objectFit: 'contain',
+          // backgroundColor: '#000',
           zIndex: 0,
           pointerEvents: 'none',
-          filter: 'brightness(0.8)',
+          filter: 'brightness(0.9)',
         }}
       />
       <Box
         sx={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.55) 100%)',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.45) 100%)',
           zIndex: 1,
           pointerEvents: 'none',
         }}
       />
       <Container sx={{ position: 'relative', zIndex: 2 }}>
         <Stack alignItems="center" spacing={2} textAlign="center">
-          <Typography variant="overline" color="text.secondary">
+          <Typography sx={{ typography: { xs: 'caption', sm: 'overline' } }} color="text.secondary">
             2025 | 06 | 21
           </Typography>
-          <Typography variant="h2" fontWeight={800}>
+          <Typography sx={{ typography: { xs: 'h3', md: 'h2' } }} fontWeight={800}>
             OUR
           </Typography>
-          <Typography variant="h2" fontWeight={800}>
+          <Typography sx={{ typography: { xs: 'h3', md: 'h2' } }} fontWeight={800}>
             WEDDING
           </Typography>
-          <Typography variant="subtitle1" color="text.secondary">
+          <Typography sx={{ typography: { xs: 'body2', sm: 'subtitle1' } }} color="text.secondary">
             {new Date(appConfig.site.dateTime).toLocaleString('ko-KR', {
               year: 'numeric',
               month: '2-digit',
@@ -60,7 +62,7 @@ function Hero() {
               minute: '2-digit',
             })}
           </Typography>
-          <Typography variant="subtitle1" color="text.secondary">
+          <Typography sx={{ typography: { xs: 'body2', sm: 'subtitle1' } }} color="text.secondary">
             {appConfig.site.venue}
           </Typography>
         </Stack>
