@@ -7,7 +7,6 @@ import {
   Box,
   Button,
   Dialog,
-  Grid,
   IconButton,
   Stack,
   Typography,
@@ -105,11 +104,13 @@ function Gallery() {
           maxHeight: expanded ? `${contentHeight}px` : `${collapsedHeight}px`,
         }}
       >
-        <Grid ref={contentRef} container spacing={1}>
+        <Box
+          ref={contentRef}
+          sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}
+        >
           {images.map((src, idx) => (
-            <Grid key={src + idx} item xs={6} sm={6} md={6} lg={6} xl={6}>
+            <Box key={src + idx} data-gallery-item="true">
               <Box
-                data-gallery-item="true"
                 component="img"
                 src={src}
                 alt="gallery"
@@ -117,16 +118,16 @@ function Gallery() {
                 onClick={() => openViewer(idx)}
                 sx={{
                   width: "100%",
-                  height: 160,
+                  height: 260,
                   objectFit: "cover",
                   borderRadius: 1,
                   cursor: "pointer",
                   userSelect: "none",
                 }}
               />
-            </Grid>
+            </Box>
           ))}
-        </Grid>
+        </Box>
       </Box>
 
       {!expanded && images.length > initialCount && (
