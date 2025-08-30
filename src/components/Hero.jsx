@@ -44,7 +44,7 @@ function Hero() {
       <Container sx={{ position: 'relative', zIndex: 2 }}>
         <Stack alignItems="center" spacing={2} textAlign="center">
           <Typography sx={{ typography: { xs: 'caption', sm: 'overline' } }} color="text.secondary">
-            2025 | 06 | 21
+            2025 | 12 | 06
           </Typography>
           <Typography sx={{ typography: { xs: 'h3', md: 'h2' } }} fontWeight={800}>
             OUR

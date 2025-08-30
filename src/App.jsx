@@ -37,7 +37,7 @@ function App() {
         <Countdown />
       </Section>
 
-      <Section id="gallery" bg="#fafafa" title="GALLERY" subtitle="지환과 하은, 함께한 시간들">
+      <Section id="gallery" bg="#fafafa" title="GALLERY" subtitle="명준과 소영, 함께한 시간들">
         <Gallery />
       </Section>
 
