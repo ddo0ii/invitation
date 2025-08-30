@@ -40,9 +40,9 @@ const appConfig = {
     // 좌표가 있으면 바로 사용하고, 없으면 주소로 지오코딩합니다.
     coords: { lat: 37.525, lng: 126.872 },
     mapLinks: {
-      naver: "https://naver.me/5ojUMFJP",
-      kakaoNavi: "kakaonavi://navigate?name=로프트가든344&x=126.872&y=37.525",
-      tmap: "tmap://search?name=로프트가든344",
+      naver: "https://naver.me/FZ2iObZY",
+      kakaoNavi: "https://kko.kakao.com/B89rdRvTtm",
+      tmap: "https://tmap.life/e0412e46",
     },
   },
   accounts: {
