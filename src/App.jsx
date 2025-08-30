@@ -1,4 +1,4 @@
-import { Container, Divider, Stack } from '@mui/material'
+import { Stack } from '@mui/material'
 import Section from './components/Section'
 import Hero from './components/Hero'
 import Intro from './components/Intro'

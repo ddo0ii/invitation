@@ -8,7 +8,7 @@ function calcDiff() {
   const now = dayjs()
   const target = dayjs(appConfig.site.dateTime)
   const diffMs = target.diff(now)
-  const duration = dayjs.duration ? dayjs.duration(diffMs) : null
+  // const duration = dayjs.duration ? dayjs.duration(diffMs) : null
   // 수동 계산 (dayjs/plugin/duration 미사용 시)
   const totalSeconds = Math.max(0, Math.floor(diffMs / 1000))
   const days = Math.floor(totalSeconds / (24 * 3600))
