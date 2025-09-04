@@ -1,3 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@300;400;500;600;700&display=swap');
+@import './assets/fonts/cormorant.css';
+@import './assets/fonts/wind-song.css';
+@import './assets/fonts/pretendard/static/pretendard.css';
+
+/* global utility */
+:root {
+    --font-cormorant: "Cormorant SC", serif;
+    --font-windsong: "WindSong", cursive;
+    --font-pretendard: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", Helvetica, Arial, sans-serif;
+}
+
+.font-cormorant {
+    font-family: var(--font-cormorant);
+}
+
+.font-windsong {
+    font-family: var(--font-windsong);
+}
+
+.font-pretendard {
+    font-family: var(--font-pretendard);
+}
+
+.hero-main {
+    text-align: center;
+    padding-top: 25px;
+    /*display: flex;*/
+    /*flex-direction: column;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
+}
+
+.wedding-caps {
+    font-family: var(--font-cormorant), serif !important;
+    /*letter-spacing: 0.4em;*/
+    /*text-transform: none;*/
+    /*font-size: 0.6em;*/
+    /*line-height: 1.1em;*/
+    letter-spacing: 0.3em;
+}
+
+.wedding-caps-name-box {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.wedding-caps-name {
+    font-family: var(--font-pretendard) !important;
+    /*letter-spacing: 0.2em;*/
+    /*text-transform: none;*/
+    font-size: 1em;
+    /*line-height: 2em;*/
+    letter-spacing: 0.15em;
+}
+
+.wedding-names {
+    font-family: Pretendard;
+    letter-spacing: 0.08em;
+}
+
+.script-names {
+    font-family: var(--font-windsong), cursive !important;
+    letter-spacing: 0.01em;
+    padding-top: 100px;
+    padding-bottom: 20px;
+
+}
+
 :root {
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
     /*line-height: 1.5;*/

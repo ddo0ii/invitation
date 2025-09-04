@@ -78,13 +78,13 @@ function ThanksTo() {
         되었습니다. 넓은 마음으로 양해 부탁드립니다.
       </Typography>
       <Grid container spacing={4} justifyContent="center">
-        <Grid xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <AccountList
             title="신랑 측 계좌번호"
             items={appConfig.accounts.groomSide}
           />
         </Grid>
-        <Grid xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <AccountList
             title="신부 측 계좌번호"
             items={appConfig.accounts.brideSide}

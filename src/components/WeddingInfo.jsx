@@ -14,7 +14,7 @@ function WeddingInfo() {
 
   return (
     <Grid container spacing={4} justifyContent="center">
-      <Grid xs={12} md={6}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Stack spacing={1} textAlign="center">
           <Typography variant="h6" fontWeight={700}>
             WEDDING DATE
@@ -22,7 +22,7 @@ function WeddingInfo() {
           <Typography>{dateLabel}</Typography>
         </Stack>
       </Grid>
-      <Grid xs={12} md={6}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Stack spacing={1} textAlign="center">
           <Typography variant="h6" fontWeight={700}>
             LOCATION

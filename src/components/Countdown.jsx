@@ -38,7 +38,7 @@ function Countdown() {
           },
           { label: "Seconds", value: diff.seconds },
         ].map((item) => (
-          <Grid key={item.label} xs={6} sm={3}>
+          <Grid key={item.label} size={{ xs: 6, sm: 3 }}>
             <Stack textAlign="center">
               <Typography variant="h4" fontWeight={800}>
                 {String(item.value).padStart(2, "0")}
