@@ -61,7 +61,7 @@ function Hero() {
           muted
           loop
           playsInline
-          src="/video/intro.mp4"
+          src="./video/intro.mp4"
           aria-label="intro background video"
           sx={{
             position: "absolute",
