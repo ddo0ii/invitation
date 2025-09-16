@@ -1,11 +1,11 @@
-import { Stack, Typography, Grid } from '@mui/material'
-import appConfig from '../app.config'
+import { Grid, Stack, Typography } from "@mui/material";
+import appConfig from "../app.config";
 
 function Couple() {
-  const { groom, bride } = appConfig.couple
+  const { groom, bride } = appConfig.couple;
   return (
     <Grid container spacing={4} justifyContent="center">
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={6}>
         <Stack spacing={0.5} textAlign="center">
           <Typography variant="overline">신랑측</Typography>
           <Typography variant="h6" fontWeight={700}>
@@ -15,7 +15,7 @@ function Couple() {
           <Typography color="text.secondary">어머니 {groom.mother}</Typography>
         </Stack>
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={6}>
         <Stack spacing={0.5} textAlign="center">
           <Typography variant="overline">신부측</Typography>
           <Typography variant="h6" fontWeight={700}>
@@ -26,9 +26,7 @@ function Couple() {
         </Stack>
       </Grid>
     </Grid>
-  )
+  );
 }
 
-export default Couple
-
-
+export default Couple;

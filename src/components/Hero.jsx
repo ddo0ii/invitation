@@ -119,7 +119,8 @@ function Hero() {
       </Box>
       <Typography
         className="script-names"
-        sx={{ fontSize: { xs: 28, md: 34 } }}
+        sx={{ fontSize: 25 }}
+        // sx={{ fontSize: { xs: 28, md: 34 } }}
       >
         Myungjun and Soyeong
       </Typography>

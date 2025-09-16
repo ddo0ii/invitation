@@ -17,7 +17,6 @@ function openLink(url) {
 function Location() {
   return (
     <Stack spacing={3}>
-      <KakaoMap address={appConfig.site.mapAddress} markerText={appConfig.site.venue} />
       <Stack spacing={1} textAlign="center">
         <Typography variant="h6" fontWeight={700}>
           오시는 길
@@ -25,6 +24,10 @@ function Location() {
         <Typography>{appConfig.site.address}</Typography>
         <Typography color="text.secondary">{appConfig.site.venue}</Typography>
       </Stack>
+      <KakaoMap
+        address={appConfig.site.mapAddress}
+        markerText={appConfig.site.venue}
+      />
       <Stack direction="row" spacing={1} justifyContent="center">
         <Button
           size="small"
