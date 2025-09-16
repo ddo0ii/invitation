@@ -2,6 +2,9 @@
 @import './assets/fonts/cormorant.css';
 @import './assets/fonts/wind-song.css';
 @import './assets/fonts/pretendard/static/pretendard.css';
+@import "./assets/fonts/stylish.css";
+@import "./assets/fonts/gowun-batang.css";
+@import "./assets/fonts/gowun-dodum.css";
 
 /* global utility */
 :root {
