@@ -3,30 +3,22 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import CloseIcon from "@mui/icons-material/Close";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
-import {
-  Box,
-  Button,
-  Dialog,
-  IconButton,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Dialog, IconButton, Stack, Typography } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
 import appConfig from "../app.config";
 
 function Gallery() {
-  const [expanded, setExpanded] = useState(false);
   const [viewerOpen, setViewerOpen] = useState(false);
   const [current, setCurrent] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const fullscreenRef = useRef(null);
-  const containerRef = useRef(null);
-  const contentRef = useRef(null);
-  const [collapsedHeight, setCollapsedHeight] = useState(0);
-  const [contentHeight, setContentHeight] = useState(0);
+  const scrollRef = useRef(null);
+  const isDraggingRef = useRef(false);
+  const dragStartXRef = useRef(0);
+  const scrollStartLeftRef = useRef(0);
 
   const images = appConfig.gallery.images;
-  const initialCount = 4; // 접힘 상태에서 2행(2열 기준)
+  // horizontal scroller
 
   const openViewer = useCallback((index) => {
     setCurrent(index);
@@ -68,98 +60,82 @@ function Gallery() {
     return () => window.removeEventListener("keydown", onKey);
   }, [viewerOpen, handlePrev, handleNext]);
 
-  const recalcHeights = useCallback(() => {
-    const contentEl = contentRef.current;
-    if (!contentEl) return;
-    const items = contentEl.querySelectorAll('[data-gallery-item="true"]');
-    const totalHeight = contentEl.scrollHeight;
-    setContentHeight(totalHeight);
-    if (items.length >= initialCount) {
-      const top = items[0].offsetTop || 0;
-      const target = items[initialCount - 1];
-      const bottom = (target.offsetTop || 0) + (target.offsetHeight || 0);
-      setCollapsedHeight(bottom - top);
-    } else {
-      setCollapsedHeight(totalHeight);
-    }
-  }, [initialCount]);
-
   useEffect(() => {
-    recalcHeights();
-  }, [images, recalcHeights]);
-
-  useEffect(() => {
-    const onResize = () => recalcHeights();
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, [recalcHeights]);
+    const el = scrollRef.current;
+    if (!el) return;
+    const onWheel = (e) => {
+      if (!e.shiftKey && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        el.scrollLeft += e.deltaY;
+        e.preventDefault();
+      }
+    };
+    const onPointerDown = (e) => {
+      isDraggingRef.current = true;
+      dragStartXRef.current = e.clientX;
+      scrollStartLeftRef.current = el.scrollLeft;
+      el.style.cursor = "grabbing";
+    };
+    const onPointerMove = (e) => {
+      if (!isDraggingRef.current) return;
+      const dx = e.clientX - dragStartXRef.current;
+      el.scrollLeft = scrollStartLeftRef.current - dx;
+    };
+    const stopDrag = () => {
+      isDraggingRef.current = false;
+      el.style.cursor = "grab";
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    el.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", stopDrag);
+    window.addEventListener("pointercancel", stopDrag);
+    return () => {
+      el.removeEventListener("wheel", onWheel);
+      el.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", stopDrag);
+      window.removeEventListener("pointercancel", stopDrag);
+    };
+  }, []);
 
   return (
     <Box sx={{ position: "relative" }}>
       <Box
-        ref={containerRef}
+        ref={scrollRef}
         sx={{
-          overflow: "hidden",
-          transition: "max-height 600ms cubic-bezier(0.22, 1, 0.36, 1)",
-          maxHeight: expanded ? `${contentHeight}px` : `${collapsedHeight}px`,
+          display: "grid",
+          gridAutoFlow: "column",
+          gridAutoColumns: "130px",
+          gridTemplateRows: "repeat(4, 130px)",
+          gap: 1,
+          overflowX: "auto",
+          overflowY: "hidden",
+          px: 1,
+          cursor: "grab",
+          scrollbarWidth: "none",
+          "&::-webkit-scrollbar": { display: "none" },
+          WebkitOverflowScrolling: "touch",
         }}
       >
-        <Box
-          ref={contentRef}
-          sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}
-        >
-          {images.map((src, idx) => (
-            <Box key={src + idx} data-gallery-item="true">
-              <Box
-                component="img"
-                src={src}
-                alt="gallery"
-                onLoad={recalcHeights}
-                onClick={() => openViewer(idx)}
-                sx={{
-                  width: "100%",
-                  height: 260,
-                  objectFit: "cover",
-                  borderRadius: 1,
-                  cursor: "pointer",
-                  userSelect: "none",
-                }}
-              />
-            </Box>
-          ))}
-        </Box>
-      </Box>
-
-      {!expanded && images.length > initialCount && (
-        <Box sx={{ position: "relative", mt: 2 }}>
-          <Box
-            sx={{
-              position: "absolute",
-              left: 0,
-              right: 0,
-              top: -72,
-              height: 72,
-              background:
-                "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 70%, rgba(255,255,255,1) 100%)",
-              backdropFilter: "blur(2px)",
-              pointerEvents: "none",
-            }}
-          />
-          <Box textAlign="center">
-            <Button variant="outlined" onClick={() => setExpanded(true)}>
-              사진 더 보기
-            </Button>
+        {images.map((src, idx) => (
+          <Box key={src + idx} sx={{ width: "100%", height: "100%" }}>
+            <Box
+              component="img"
+              src={src}
+              alt="gallery"
+              onClick={() => openViewer(idx)}
+              sx={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                borderRadius: 1,
+                cursor: "pointer",
+                userSelect: "none",
+              }}
+            />
           </Box>
-        </Box>
-      )}
-
-      {expanded && images.length > initialCount && (
-        <Box textAlign="center" mt={2}>
-          <Button variant="outlined" onClick={() => setExpanded(false)}>
-            사진 접기
-          </Button>
-        </Box>
-      )}
+        ))}
+      </Box>
 
       <Dialog open={viewerOpen} onClose={() => setViewerOpen(false)} fullScreen>
         <Box
@@ -171,6 +147,24 @@ function Gallery() {
             bgcolor: "black",
           }}
         >
+          {/* 드래그/클릭 네비게이션 */}
+          <Box
+            sx={{ position: "absolute", inset: 0, zIndex: 1 }}
+            onPointerDown={(e) => {
+              dragStartXRef.current = e.clientX;
+            }}
+            onPointerUp={(e) => {
+              const dx = e.clientX - dragStartXRef.current;
+              if (dx > 40) handlePrev();
+              else if (dx < -40) handleNext();
+              else {
+                // 클릭 영역으로 이동
+                const w = e.currentTarget.clientWidth;
+                if (e.clientX < w * 0.33) handlePrev();
+                else if (e.clientX > w * 0.67) handleNext();
+              }
+            }}
+          />
           <IconButton
             aria-label="close"
             onClick={() => setViewerOpen(false)}
