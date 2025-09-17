@@ -3,7 +3,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import CloseIcon from "@mui/icons-material/Close";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
-import { Box, Dialog, IconButton, Stack, Typography } from "@mui/material";
+import { Box, Dialog, IconButton, Typography } from "@mui/material";
 import "./Gallery.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import appConfig from "../app.config";
@@ -13,6 +13,7 @@ function Gallery() {
   const [current, setCurrent] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const fullscreenRef = useRef(null);
+  const imgRef = useRef(null);
   const scrollRef = useRef(null);
   const isDraggingRef = useRef(false);
   const dragStartXRef = useRef(0);
@@ -58,6 +59,30 @@ function Gallery() {
       console.error(e);
     }
   }, []);
+
+  // Arrow positions computed from image rect
+  const [arrowPos, setArrowPos] = useState({});
+  const updateArrows = useCallback(() => {
+    const el = imgRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    setArrowPos({
+      top: r.top + r.height / 2,
+      left: r.left + 12,
+      right: window.innerWidth - (r.right + 12),
+    });
+  }, []);
+  useEffect(() => {
+    if (!viewerOpen) return;
+    updateArrows();
+    const onResize = () => updateArrows();
+    window.addEventListener("resize", onResize);
+    window.addEventListener("orientationchange", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("orientationchange", onResize);
+    };
+  }, [viewerOpen, updateArrows, current]);
 
   useEffect(() => {
     const onKey = (e) => {
@@ -137,7 +162,7 @@ function Gallery() {
             position: "relative",
             width: "100%",
             height: "100%",
-            bgcolor: "black",
+            backgroundColor: "black",
           }}
         >
           {/* 드래그/클릭 네비게이션 */}
@@ -146,41 +171,78 @@ function Gallery() {
             onPointerDown={(e) => {
               dragStartXRef.current = e.clientX;
             }}
+            onPointerMove={(e) => {
+              if (e.buttons !== 1) return; // only while pressing
+              const dx = e.clientX - dragStartXRef.current;
+              if (Math.abs(dx) > 60) {
+                if (dx > 0) handlePrev();
+                else handleNext();
+                dragStartXRef.current = e.clientX; // reset to avoid multiple jumps
+              }
+            }}
             onPointerUp={(e) => {
               const dx = e.clientX - dragStartXRef.current;
-              if (dx > 40) handlePrev();
-              else if (dx < -40) handleNext();
-              else {
-                // 클릭 영역으로 이동
+              if (Math.abs(dx) < 30) {
+                // 탭처럼 클릭 영역으로 이동
                 const w = e.currentTarget.clientWidth;
                 if (e.clientX < w * 0.33) handlePrev();
                 else if (e.clientX > w * 0.67) handleNext();
               }
             }}
           />
-          <IconButton aria-label="close" onClick={() => setViewerOpen(false)} className="viewer__btn viewer__btn--close">
-            <CloseIcon />
-          </IconButton>
-          <IconButton aria-label="prev" onClick={handlePrev} className="viewer__btn viewer__btn--prev">
-            <ChevronLeftIcon fontSize="large" />
-          </IconButton>
-          <IconButton aria-label="next" onClick={handleNext} className="viewer__btn viewer__btn--next">
-            <ChevronRightIcon fontSize="large" />
-          </IconButton>
-          <IconButton aria-label="fullscreen" onClick={toggleFullscreen} className="viewer__btn viewer__btn--fs">
-            {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
-          </IconButton>
-
-          <Stack
-            alignItems="center"
-            justifyContent="center"
-            sx={{ width: "100%", height: "100%" }}
+          <Box sx={{ width: "100%", textAlign: "end" }}>
+            <IconButton
+              aria-label="fullscreen"
+              onClick={toggleFullscreen}
+              className="viewer__btn viewer__btn--fs"
+            >
+              {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+            </IconButton>
+            <IconButton
+              aria-label="close"
+              onClick={() => setViewerOpen(false)}
+              className="viewer__btn viewer__btn--close"
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+            }}
           >
-            <Box component="img" src={images[current]?.full} alt={`gallery-${current + 1}`} className="viewer__img" fetchpriority="high" />
-            <Typography color="white" sx={{ mt: 1 }}>
-              {current + 1} / {images.length}
-            </Typography>
-          </Stack>
+            <IconButton
+              aria-label="prev"
+              onClick={handlePrev}
+              className="viewer__btn viewer__btn--prev"
+            >
+              <ChevronLeftIcon fontSize="large" />
+            </IconButton>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <Box
+                component="img"
+                src={images[current]?.full}
+                alt={`gallery-${current + 1}`}
+                className="viewer__img"
+                fetchpriority="high"
+              />
+              <Box>
+                <Typography className="viewer__count">
+                  {current + 1} / {images.length}
+                </Typography>
+              </Box>
+            </Box>
+            <IconButton
+              aria-label="next"
+              onClick={handleNext}
+              className="viewer__btn viewer__btn--next"
+            >
+              <ChevronRightIcon fontSize="large" />
+            </IconButton>
+          </Box>
         </Box>
       </Dialog>
     </Box>
