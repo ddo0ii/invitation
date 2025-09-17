@@ -4,8 +4,8 @@ import appConfig from "../app.config";
 function Couple() {
   const { groom, bride } = appConfig.couple;
   return (
-    <Grid container spacing={4} justifyContent="center">
-      <Grid size={6}>
+    <Grid container justifyContent="center">
+      <Grid size={12}>
         <Stack spacing={0.5} textAlign="center">
           <Typography variant="overline">신랑측</Typography>
           <Typography variant="h6" fontWeight={700}>
@@ -15,7 +15,7 @@ function Couple() {
           <Typography color="text.secondary">어머니 {groom.mother}</Typography>
         </Stack>
       </Grid>
-      <Grid size={6}>
+      <Grid size={12}>
         <Stack spacing={0.5} textAlign="center">
           <Typography variant="overline">신부측</Typography>
           <Typography variant="h6" fontWeight={700}>

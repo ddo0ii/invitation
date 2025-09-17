@@ -6,6 +6,7 @@ const appConfig = {
     venue: "페어몬트 앰배서더 서울",
     address: "서울 영등포구 여의대로 108",
     mapAddress: "서울 영등포구 여의대로 108 페어몬트 앰배서더 서울 호텔",
+    mainCharacterEn: "Myungjun and Soyeong",
   },
   couple: {
     groom: { name: "강명준", father: "강복진", mother: "김금산" },

@@ -6,32 +6,20 @@ function Hero() {
     <Box className="hero-main">
       <Typography
         className="wedding-caps"
-        // sx={{ fontSize: { xs: 13, md: 15 } }}
+        variant="cormorant-sc-medium"
         sx={{ fontSize: "0.6em" }}
       >
         WEDDING INVITATION
       </Typography>
       <Box className="wedding-caps-name-box">
-        <Typography
-          className="wedding-caps-name"
-          sx={{ fontSize: "1em" }}
-          // sx={{ fontSize: { xs: 13, md: 15 } }}
-        >
-          강명준
+        <Typography className="wedding-caps-name" sx={{ fontSize: "1em" }}>
+          {appConfig.couple.groom.name}
         </Typography>
-        <Typography
-          className="wedding-caps-name"
-          sx={{ fontSize: "1em" }}
-          // sx={{ fontSize: { xs: 13, md: 15 } }}
-        >
+        <Typography className="wedding-caps-name" sx={{ fontSize: "1em" }}>
           |
         </Typography>
-        <Typography
-          className="wedding-caps-name"
-          sx={{ fontSize: "1em" }}
-          // sx={{ fontSize: { xs: 13, md: 15 } }}
-        >
-          권소영
+        <Typography className="wedding-caps-name" sx={{ fontSize: "1em" }}>
+          {appConfig.couple.bride.name}
         </Typography>
       </Box>
       <Box
@@ -117,32 +105,41 @@ function Hero() {
           }}
         />
       </Box>
-      <Typography
-        className="script-names"
-        sx={{ fontSize: 25 }}
-        // sx={{ fontSize: { xs: 28, md: 34 } }}
+      <Box
+        sx={{
+          marginTop: "100px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 1,
+        }}
       >
-        Myungjun and Soyeong
-      </Typography>
-      <Typography
-        sx={{ typography: { xs: "body2", sm: "subtitle1" } }}
-        color="text.secondary"
-      >
-        {new Date(appConfig.site.dateTime).toLocaleString("ko-KR", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          weekday: "long",
-          hour: "numeric",
-          minute: "2-digit",
-        })}
-      </Typography>
-      <Typography
-        sx={{ typography: { xs: "body2", sm: "subtitle1" } }}
-        color="text.secondary"
-      >
-        {appConfig.site.venue}
-      </Typography>
+        <Typography
+          className="script-names"
+          variant="windsong"
+          sx={{ fontSize: 25 }}
+        >
+          {appConfig.site.mainCharacterEn}
+        </Typography>
+        <Typography
+          sx={{ typography: { xs: "body2", sm: "subtitle1" } }}
+          color="text.secondary"
+        >
+          {new Date(appConfig.site.dateTime).toLocaleString("ko-KR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            weekday: "long",
+            hour: "numeric",
+            minute: "2-digit",
+          })}
+        </Typography>
+        <Typography
+          sx={{ typography: { xs: "body2", sm: "subtitle1" } }}
+          color="text.secondary"
+        >
+          {appConfig.site.venue}
+        </Typography>
+      </Box>
     </Box>
   );
 }
