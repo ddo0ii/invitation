@@ -18,7 +18,16 @@ function Gallery() {
   const dragStartXRef = useRef(0);
   const scrollStartLeftRef = useRef(0);
 
-  const images = appConfig.gallery.images;
+  // 이미지는 {thumb, full} 형태를 지원. 문자열이면 thumb를 '/thumb/'에 동일 파일명으로 맵핑, full은 원본 사용
+  const toPair = (img) => {
+    if (typeof img === "string") {
+      const url = img;
+      const thumb = url.replace("/image/", "/thumb/");
+      return { thumb, full: url };
+    }
+    return img;
+  };
+  const images = (appConfig.gallery.images || []).map(toPair);
   // horizontal scroller
 
   const openViewer = useCallback((index) => {
@@ -102,9 +111,21 @@ function Gallery() {
   return (
     <Box className="gallery">
       <Box ref={scrollRef} className="gallery__track">
-        {images.map((src, idx) => (
-          <Box key={src + idx} className="gallery__item">
-            <Box component="img" src={src} alt="gallery" onClick={() => openViewer(idx)} className="gallery__img" />
+        {images.map((item, idx) => (
+          <Box key={(item.full || item.thumb) + idx} className="gallery__item">
+            <Box
+              component="img"
+              src={item.thumb}
+              alt="gallery"
+              loading="lazy"
+              decoding="async"
+              onClick={() => openViewer(idx)}
+              onError={(e) => {
+                // 썸네일이 없으면 원본으로 대체
+                e.currentTarget.src = item.full;
+              }}
+              className="gallery__img"
+            />
           </Box>
         ))}
       </Box>
@@ -155,16 +176,7 @@ function Gallery() {
             justifyContent="center"
             sx={{ width: "100%", height: "100%" }}
           >
-            <Box
-              component="img"
-              src={images[current]}
-              alt={`gallery-${current + 1}`}
-              sx={{
-                maxWidth: "100vw",
-                maxHeight: "80vh",
-                objectFit: "contain",
-              }}
-            />
+            <Box component="img" src={images[current]?.full} alt={`gallery-${current + 1}`} className="viewer__img" fetchpriority="high" />
             <Typography color="white" sx={{ mt: 1 }}>
               {current + 1} / {images.length}
             </Typography>

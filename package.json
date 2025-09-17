@@ -5,10 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "yarn thumbs",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "vite build && gh-pages -d dist"
+    "deploy": "vite build && gh-pages -d dist",
+    "thumbs": "node scripts/generate-thumbs.mjs public/image public/thumb --width=900 --quality=80",
+    "thumbs:600": "node scripts/generate-thumbs.mjs public/image public/thumb --width=600 --quality=82"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -32,6 +35,7 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
     "prettier": "^3.6.2",
+    "sharp": "^0.34.4",
     "vite": "^7.1.2",
     "vite-plugin-svgr": "^4.5.0"
   }
