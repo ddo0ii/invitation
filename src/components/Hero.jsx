@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import appConfig from "../app.config";
+import "./Hero.css";
 
 function Hero() {
   return (
@@ -22,88 +23,15 @@ function Hero() {
           {appConfig.couple.bride.name}
         </Typography>
       </Box>
-      <Box
-        sx={{
-          position: "relative",
-          py: { xs: 8, md: 12 },
-          minHeight: { xs: "100vh", md: "110vh" },
-          overflow: "hidden",
-        }}
-      >
+      <Box className="section hero">
         {/* Top title overlay - match reference */}
-        <Box
-          sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            zIndex: 3,
-            pt: { xs: 4, md: 6 },
-            textAlign: "center",
-            color: "#1a1a1a",
-          }}
-        ></Box>
-        <Box
-          component="video"
-          autoPlay
-          muted
-          loop
-          playsInline
-          src="./video/intro.mp4"
-          aria-label="intro background video"
-          sx={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            // objectFit: 'contain',
-            // backgroundColor: '#000',
-            zIndex: 0,
-            pointerEvents: "none",
-            filter: "brightness(0.9)",
-          }}
-        />
+        <Box sx={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 3, pt: { xs: 4, md: 6 }, textAlign: "center", color: "#1a1a1a" }}></Box>
+        <Box component="video" autoPlay muted loop playsInline src="./video/intro.mp4" aria-label="intro background video" className="hero__video" />
 
-        <Box
-          sx={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.32) 100%)",
-            zIndex: 1,
-            pointerEvents: "none",
-          }}
-        />
+        <Box className="hero__wash" />
         {/* top and bottom fade like reference */}
-        <Box
-          sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: { xs: 160, md: 200 },
-            background:
-              "linear-gradient(to bottom, #ffffff 0%, rgba(255,255,255,0.6) 40%, rgba(255,255,255,0.0) 100%)",
-            backdropFilter: "blur(2px)",
-            zIndex: 2,
-            pointerEvents: "none",
-          }}
-        />
-        <Box
-          sx={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: { xs: 180, md: 240 },
-            background:
-              "linear-gradient(to top, #ffffff 0%, rgba(255,255,255,0.6) 40%, rgba(255,255,255,0.0) 100%)",
-            backdropFilter: "blur(2px)",
-            zIndex: 2,
-            pointerEvents: "none",
-          }}
-        />
+        <Box className="hero__fade-top" />
+        <Box className="hero__fade-bottom" />
       </Box>
       <Box
         sx={{

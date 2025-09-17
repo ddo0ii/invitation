@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import appConfig from "../app.config";
+import "./WeddingInfo.css";
 
 function WeddingInfo() {
   const date = new Date(appConfig.site.dateTime);
@@ -13,21 +14,14 @@ function WeddingInfo() {
   });
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 10,
-        textAlign: "center",
-      }}
-    >
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+    <Box className="winfo">
+      <Box className="winfo__card">
         <Typography variant="h6" fontWeight={700}>
           WEDDING DATE
         </Typography>
         <Typography>{dateLabel}</Typography>
       </Box>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      <Box className="winfo__card">
         <Typography variant="h6" fontWeight={700}>
           LOCATION
         </Typography>

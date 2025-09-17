@@ -1,9 +1,22 @@
 :root {
+    /* spacing scale */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-8: 48px;
+    --space-10: 64px;
+
+    /* section widths */
+    --container-max: 720px;
+    --section-pad-y: 64px;
 }
 
 .hero-main {
     text-align: center;
-    padding-top: 25px;
+    padding-top: var(--space-5);
 }
 
 .wedding-caps {
@@ -13,9 +26,9 @@
 .wedding-caps-name-box {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    padding-top: 10px;
-    padding-bottom: 30px;
+    gap: var(--space-3);
+    padding-top: var(--space-3);
+    padding-bottom: var(--space-6);
 }
 
 .wedding-caps-name {
@@ -29,7 +42,30 @@
 
 .script-names {
     letter-spacing: 0.01em;
-    padding-bottom: 20px;
+    padding-bottom: var(--space-5);
+}
+
+/* section */
+.section {
+    padding: var(--section-pad-y) var(--space-4);
+}
+
+.section-inner {
+    margin: 0 auto;
+    max-width: var(--container-max);
+}
+
+.section-title {
+    font-family: var(--font-cormorant), serif;
+    letter-spacing: 0.25em;
+    text-align: center;
+    margin: 0 0 var(--space-4);
+}
+
+.section-subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: var(--space-6);
 }
 
 :root {

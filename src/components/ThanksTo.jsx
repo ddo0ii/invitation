@@ -14,6 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import "./ThanksTo.css";
 import { useState } from "react";
 import appConfig from "../app.config";
 
@@ -28,7 +29,7 @@ async function copy(text) {
 
 function AccountList({ title, items }) {
   return (
-    <Accordion disableGutters>
+    <Accordion disableGutters className="thanks__acc">
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Typography variant="subtitle1" fontWeight={700}>
           {title}
@@ -65,25 +66,25 @@ function ThanksTo() {
   const [open, setOpen] = useState(false);
   
   return (
-    <Stack spacing={2}>
-      <Typography>
+    <Stack className="thanks" spacing={2}>
+      <Typography className="thanks__desc">
         직접 축하를 전하지 못하는 분들을 위해 부득이하게 계좌번호를 기재하게
         되었습니다. 넓은 마음으로 양해 부탁드립니다.
       </Typography>
-      <Grid container spacing={2}>
-        <Grid size={12}>
+      <div className="thanks__grid">
+        <div>
           <AccountList
             title="신랑 측 계좌번호"
             items={appConfig.accounts.groomSide}
           />
-        </Grid>
-        <Grid size={12}>
+        </div>
+        <div>
           <AccountList
             title="신부 측 계좌번호"
             items={appConfig.accounts.brideSide}
           />
-        </Grid>
-      </Grid>
+        </div>
+      </div>
       <Snackbar
         open={open}
         autoHideDuration={1500}

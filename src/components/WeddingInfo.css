@@ -1,0 +1,11 @@
+.winfo {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .winfo { grid-template-columns: 1fr 1fr; }
+}
+
+.winfo__card { text-align: center; }
+

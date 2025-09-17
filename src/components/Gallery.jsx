@@ -4,6 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import { Box, Dialog, IconButton, Stack, Typography } from "@mui/material";
+import "./Gallery.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import appConfig from "../app.config";
 
@@ -99,40 +100,11 @@ function Gallery() {
   }, []);
 
   return (
-    <Box sx={{ position: "relative" }}>
-      <Box
-        ref={scrollRef}
-        sx={{
-          display: "grid",
-          gridAutoFlow: "column",
-          gridAutoColumns: "130px",
-          gridTemplateRows: "repeat(4, 130px)",
-          gap: 1,
-          overflowX: "auto",
-          overflowY: "hidden",
-          px: 1,
-          cursor: "grab",
-          scrollbarWidth: "none",
-          "&::-webkit-scrollbar": { display: "none" },
-          WebkitOverflowScrolling: "touch",
-        }}
-      >
+    <Box className="gallery">
+      <Box ref={scrollRef} className="gallery__track">
         {images.map((src, idx) => (
-          <Box key={src + idx} sx={{ width: "100%", height: "100%" }}>
-            <Box
-              component="img"
-              src={src}
-              alt="gallery"
-              onClick={() => openViewer(idx)}
-              sx={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                borderRadius: 1,
-                cursor: "pointer",
-                userSelect: "none",
-              }}
-            />
+          <Box key={src + idx} className="gallery__item">
+            <Box component="img" src={src} alt="gallery" onClick={() => openViewer(idx)} className="gallery__img" />
           </Box>
         ))}
       </Box>
@@ -149,7 +121,7 @@ function Gallery() {
         >
           {/* 드래그/클릭 네비게이션 */}
           <Box
-            sx={{ position: "absolute", inset: 0, zIndex: 1 }}
+            className="viewer__hit"
             onPointerDown={(e) => {
               dragStartXRef.current = e.clientX;
             }}
@@ -165,58 +137,16 @@ function Gallery() {
               }
             }}
           />
-          <IconButton
-            aria-label="close"
-            onClick={() => setViewerOpen(false)}
-            sx={{
-              position: "absolute",
-              top: 8,
-              right: 8,
-              zIndex: 2,
-              color: "white",
-            }}
-          >
+          <IconButton aria-label="close" onClick={() => setViewerOpen(false)} className="viewer__btn viewer__btn--close">
             <CloseIcon />
           </IconButton>
-          <IconButton
-            aria-label="prev"
-            onClick={handlePrev}
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: 8,
-              transform: "translateY(-50%)",
-              zIndex: 2,
-              color: "white",
-            }}
-          >
+          <IconButton aria-label="prev" onClick={handlePrev} className="viewer__btn viewer__btn--prev">
             <ChevronLeftIcon fontSize="large" />
           </IconButton>
-          <IconButton
-            aria-label="next"
-            onClick={handleNext}
-            sx={{
-              position: "absolute",
-              top: "50%",
-              right: 8,
-              transform: "translateY(-50%)",
-              zIndex: 2,
-              color: "white",
-            }}
-          >
+          <IconButton aria-label="next" onClick={handleNext} className="viewer__btn viewer__btn--next">
             <ChevronRightIcon fontSize="large" />
           </IconButton>
-          <IconButton
-            aria-label="fullscreen"
-            onClick={toggleFullscreen}
-            sx={{
-              position: "absolute",
-              bottom: 12,
-              right: 12,
-              zIndex: 2,
-              color: "white",
-            }}
-          >
+          <IconButton aria-label="fullscreen" onClick={toggleFullscreen} className="viewer__btn viewer__btn--fs">
             {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
 

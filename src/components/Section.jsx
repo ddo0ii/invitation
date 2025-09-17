@@ -1,25 +1,25 @@
-import { Box, Container, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 
-function Section({ id, title, subtitle, children, bg = 'transparent', py = 10 }) {
+function Section({ id, title, subtitle, children, bg = 'transparent' }) {
   return (
-    <Box id={id} component="section" sx={{ backgroundColor: bg, py }}>
-      <Container>
+    <Box id={id} component="section" className="section" sx={{ backgroundColor: bg }}>
+      <Box className="section-inner">
         {(title || subtitle) && (
-          <Box sx={{ mb: 4, textAlign: 'center' }}>
+          <Box>
             {title && (
-              <Typography variant="h4" component="h2" fontWeight={700} gutterBottom>
+              <Typography component="h2" className="section-title">
                 {title}
               </Typography>
             )}
             {subtitle && (
-              <Typography variant="subtitle1" color="text.secondary">
+              <Typography className="section-subtitle">
                 {subtitle}
               </Typography>
             )}
           </Box>
         )}
         {children}
-      </Container>
+      </Box>
     </Box>
   )
 }
