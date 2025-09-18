@@ -12,10 +12,12 @@ import ThanksTo from './components/ThanksTo'
 import Guestbook from './components/Guestbook'
 import Share from './components/Share'
 import RSVPDialog from './components/RSVPDialog'
+import AudioToggle from './components/AudioToggle'
 
 function App() {
   return (
     <Stack>
+      <AudioToggle />
       <RSVPDialog />
       <Hero />
 
