@@ -61,7 +61,7 @@ function Gallery() {
   }, []);
 
   // Arrow positions computed from image rect
-  const [arrowPos, setArrowPos] = useState({});
+  const [, setArrowPos] = useState({});
   const updateArrows = useCallback(() => {
     const el = imgRef.current;
     if (!el) return;
@@ -156,16 +156,16 @@ function Gallery() {
       </Box>
 
       <Dialog open={viewerOpen} onClose={() => setViewerOpen(false)} fullScreen>
-          <Box
-            ref={fullscreenRef}
-            sx={{
-              position: "relative",
-              width: "100%",
-              height: "100%",
-              backgroundColor: "black",
-              overflow: "hidden",
-            }}
-          >
+        <Box
+          ref={fullscreenRef}
+          sx={{
+            position: "relative",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "black",
+            overflow: "hidden",
+          }}
+        >
           {/* 드래그/클릭 네비게이션 */}
           <Box
             className="viewer__hit"
@@ -217,7 +217,13 @@ function Gallery() {
               pointerEvents: "none",
             }}
           >
-            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
               <Box
                 ref={imgRef}
                 component="img"
@@ -227,7 +233,10 @@ function Gallery() {
                 fetchpriority="high"
                 style={{ pointerEvents: "auto" }}
               />
-              <Typography className="viewer__count" style={{ pointerEvents: "auto" }}>
+              <Typography
+                className="viewer__count"
+                style={{ pointerEvents: "auto" }}
+              >
                 {current + 1} / {images.length}
               </Typography>
             </Box>
@@ -238,7 +247,13 @@ function Gallery() {
             aria-label="prev"
             onClick={handlePrev}
             className="viewer__btn viewer__btn--prev"
-            sx={{ position: "absolute", top: "50%", left: 16, transform: "translateY(-50%)", zIndex: 3 }}
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: 16,
+              transform: "translateY(-50%)",
+              zIndex: 3,
+            }}
           >
             <ChevronLeftIcon fontSize="large" />
           </IconButton>
@@ -246,7 +261,13 @@ function Gallery() {
             aria-label="next"
             onClick={handleNext}
             className="viewer__btn viewer__btn--next"
-            sx={{ position: "absolute", top: "50%", right: 16, transform: "translateY(-50%)", zIndex: 3 }}
+            sx={{
+              position: "absolute",
+              top: "50%",
+              right: 16,
+              transform: "translateY(-50%)",
+              zIndex: 3,
+            }}
           >
             <ChevronRightIcon fontSize="large" />
           </IconButton>
