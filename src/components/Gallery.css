@@ -48,38 +48,38 @@
 }
 
 .viewer__hit {
-    /*position: absolute;*/
-    /*inset: 0;*/
-    /*z-index: 1;*/
-    /*touch-action: pan-y;*/
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    touch-action: pan-y;
 }
 
 .viewer__btn {
-    /*position: fixed;*/
+    position: absolute;
     color: #fff !important;
-    /*z-index: 3;*/
+    z-index: 3;
 }
 
 .viewer__btn--close {
-    /*top: 16px;*/
-    /*right: 16px;*/
+    top: 16px;
+    right: 16px;
 }
 
 .viewer__btn--prev {
-    /*top: 50%;*/
-    /*left: 16px;*/
-    /*transform: translateY(-50%);*/
+    top: 50%;
+    left: 16px;
+    transform: translateY(-50%);
 }
 
 .viewer__btn--next {
-    /*top: 50%;*/
-    /*right: 16px;*/
-    /*transform: translateY(-50%);*/
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
 }
 
 .viewer__btn--fs {
-    /*bottom: 16px;*/
-    /*right: max(16px, env(safe-area-inset-right));*/
+    bottom: 16px;
+    right: max(16px, env(safe-area-inset-right));
 }
 
 /* Grid layout to keep arrows aligned to image edges */
@@ -107,10 +107,15 @@
 }
 
 .viewer__count {
-    position: fixed;
+    position: absolute;
     left: 50%;
     bottom: 12px;
     transform: translateX(-50%);
     color: #fff;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 14px;
+    z-index: 3;
 }
 

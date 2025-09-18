@@ -156,15 +156,16 @@ function Gallery() {
       </Box>
 
       <Dialog open={viewerOpen} onClose={() => setViewerOpen(false)} fullScreen>
-        <Box
-          ref={fullscreenRef}
-          sx={{
-            position: "relative",
-            width: "100%",
-            height: "100%",
-            backgroundColor: "black",
-          }}
-        >
+          <Box
+            ref={fullscreenRef}
+            sx={{
+              position: "relative",
+              width: "100%",
+              height: "100%",
+              backgroundColor: "black",
+              overflow: "hidden",
+            }}
+          >
           {/* 드래그/클릭 네비게이션 */}
           <Box
             className="viewer__hit"
@@ -190,59 +191,65 @@ function Gallery() {
               }
             }}
           />
-          <Box sx={{ width: "100%", textAlign: "end" }}>
-            <IconButton
-              aria-label="fullscreen"
-              onClick={toggleFullscreen}
-              className="viewer__btn viewer__btn--fs"
-            >
-              {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
-            </IconButton>
-            <IconButton
-              aria-label="close"
-              onClick={() => setViewerOpen(false)}
-              className="viewer__btn viewer__btn--close"
-            >
-              <CloseIcon />
-            </IconButton>
-          </Box>
+          <IconButton
+            aria-label="fullscreen"
+            onClick={toggleFullscreen}
+            className="viewer__btn viewer__btn--fs"
+            sx={{ position: "absolute", bottom: 16, right: 16, zIndex: 3 }}
+          >
+            {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+          </IconButton>
+          <IconButton
+            aria-label="close"
+            onClick={() => setViewerOpen(false)}
+            className="viewer__btn viewer__btn--close"
+            sx={{ position: "absolute", top: 16, right: 16, zIndex: 3 }}
+          >
+            <CloseIcon />
+          </IconButton>
           <Box
             sx={{
-              width: "100%",
-              height: "100%",
+              position: "absolute",
+              inset: 0,
               display: "flex",
+              alignItems: "center",
               justifyContent: "center",
+              pointerEvents: "none",
             }}
           >
-            <IconButton
-              aria-label="prev"
-              onClick={handlePrev}
-              className="viewer__btn viewer__btn--prev"
-            >
-              <ChevronLeftIcon fontSize="large" />
-            </IconButton>
-            <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
               <Box
+                ref={imgRef}
                 component="img"
                 src={images[current]?.full}
                 alt={`gallery-${current + 1}`}
                 className="viewer__img"
                 fetchpriority="high"
+                style={{ pointerEvents: "auto" }}
               />
-              <Box>
-                <Typography className="viewer__count">
-                  {current + 1} / {images.length}
-                </Typography>
-              </Box>
+              <Typography className="viewer__count" style={{ pointerEvents: "auto" }}>
+                {current + 1} / {images.length}
+              </Typography>
             </Box>
-            <IconButton
-              aria-label="next"
-              onClick={handleNext}
-              className="viewer__btn viewer__btn--next"
-            >
-              <ChevronRightIcon fontSize="large" />
-            </IconButton>
           </Box>
+
+          {/* 화살표 버튼 - 컨테이너 기준 절대배치 */}
+          <IconButton
+            aria-label="prev"
+            onClick={handlePrev}
+            className="viewer__btn viewer__btn--prev"
+            sx={{ position: "absolute", top: "50%", left: 16, transform: "translateY(-50%)", zIndex: 3 }}
+          >
+            <ChevronLeftIcon fontSize="large" />
+          </IconButton>
+          <IconButton
+            aria-label="next"
+            onClick={handleNext}
+            className="viewer__btn viewer__btn--next"
+            sx={{ position: "absolute", top: "50%", right: 16, transform: "translateY(-50%)", zIndex: 3 }}
+          >
+            <ChevronRightIcon fontSize="large" />
+          </IconButton>
         </Box>
       </Dialog>
     </Box>
