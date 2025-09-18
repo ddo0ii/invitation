@@ -8,7 +8,7 @@ function AudioToggle({ src = "./audio/TrackTribe.mp3" }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
 
-  // 자동재생 시도 + 실패 시 전역 클릭/터치에서 재시도
+  // 오디오 설정 + 사용자 상호작용 대기
   useEffect(() => {
     const audioEl = audioRef.current;
     if (!audioEl) return;
@@ -17,28 +17,12 @@ function AudioToggle({ src = "./audio/TrackTribe.mp3" }) {
     audioEl.volume = 0.6;
     audioEl.muted = true;
 
-    const tryPlay = async () => {
-      try {
-        await audioEl.play();
-        setIsPlaying(true);
-        removeUnlockListeners();
-      } catch (e) {
-        console.error(e);
-        // 자동재생 실패 → 사용자 상호작용 대기
-        addUnlockListeners();
-      }
-    };
-
-    const onVisibility = () => {
-      if (document.visibilityState === "visible" && !isPlaying) {
-        tryPlay();
-      }
-    };
-
     const unlock = async () => {
       try {
+        audioEl.muted = false;
         await audioEl.play();
         setIsPlaying(true);
+        setIsMuted(false);
         removeUnlockListeners();
       } catch (e) {
         console.error(e);
@@ -48,28 +32,45 @@ function AudioToggle({ src = "./audio/TrackTribe.mp3" }) {
     const addUnlockListeners = () => {
       document.addEventListener("click", unlock, { once: true });
       document.addEventListener("touchstart", unlock, { once: true });
+      document.addEventListener("pointerdown", unlock, { once: true });
     };
     const removeUnlockListeners = () => {
       document.removeEventListener("click", unlock);
       document.removeEventListener("touchstart", unlock);
+      document.removeEventListener("pointerdown", unlock);
     };
 
-    // 초기 자동재생 시도
-    tryPlay();
-    document.addEventListener("visibilitychange", onVisibility);
+    // 사용자 상호작용 대기
+    addUnlockListeners();
 
     return () => {
       removeUnlockListeners();
-      document.removeEventListener("visibilitychange", onVisibility);
       audioEl.pause();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src]);
+
+  // 입장 오버레이가 보내는 이벤트로 즉시 소리 켜기
+  useEffect(() => {
+    const handler = async () => {
+      const audioEl = audioRef.current;
+      if (!audioEl) return;
+      try {
+        audioEl.muted = false;
+        await audioEl.play();
+        setIsMuted(false);
+        setIsPlaying(true);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    window.addEventListener("enable-audio", handler, { once: true });
+    return () => window.removeEventListener("enable-audio", handler);
+  }, []);
 
   const toggle = async () => {
     const audioEl = audioRef.current;
     if (!audioEl) return;
-    // 재생 상태는 유지하고 음소거만 토글
+    // 재생 상태가 아니면 우선 재생 시도
     if (!isPlaying) {
       try {
         await audioEl.play();

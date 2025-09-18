@@ -143,9 +143,14 @@ function RSVPDialog() {
     processQueueOnce();
   }, []);
 
+  const enableAudio = () => {
+    window.dispatchEvent(new Event("enable-audio"));
+  };
+
   const handleClose = () => {
     setHideForOneDay(hideToday);
     setOpen(false);
+    enableAudio();
   };
 
   const handleSubmit = async () => {
@@ -167,13 +172,27 @@ function RSVPDialog() {
     processQueueOnce();
     setHideForOneDay(true);
     setOpen(false);
+    enableAudio();
+  };
+
+  // 바깥 클릭/ESC로는 닫히지 않도록 제어
+  const handleDialogClose = (event, reason) => {
+    if (reason === "backdropClick" || reason === "escapeKeyDown") return;
+    handleClose();
   };
 
   if (!open) return null;
 
   return (
     <>
-      <Dialog open onClose={handleClose} maxWidth="sm" fullWidth>
+      <Dialog
+        open={true}
+        onClose={handleDialogClose}
+        disableEscapeKeyDown
+        keepMounted
+        maxWidth="sm"
+        fullWidth
+      >
         <DialogTitle sx={{ pr: 6 }}>
           {step === "intro" ? "참석 의사 전달" : "참석 의사 전달"}
           <IconButton
@@ -204,7 +223,10 @@ function RSVPDialog() {
               <Button
                 variant="contained"
                 size="large"
-                onClick={() => setStep("form")}
+                onClick={() => {
+                  setStep("form");
+                  enableAudio();
+                }}
                 sx={{ mt: 1 }}
               >
                 참석 의사 전달하기
