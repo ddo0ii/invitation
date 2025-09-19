@@ -9,6 +9,9 @@
     --space-8: 48px;
     --space-10: 64px;
 
+    /* Force light mode regardless of system setting */
+    color-scheme: light;
+
     /* section widths */
     --container-max: 720px;
     --section-pad-y: 64px;
@@ -125,6 +128,8 @@ body {
     min-width: 320px;
     max-width: 500px;
     overflow-x: hidden;
+    background-color: #ffffff;
+    color: #1a1a1a;
 }
 
 #root {
