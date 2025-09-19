@@ -9,8 +9,20 @@ const appConfig = {
     mainCharacterEn: "Myungjun and Soyeong",
   },
   couple: {
-    groom: { name: "강명준", father: "강복진", mother: "김금산" },
-    bride: { name: "권소영", father: "권용덕", mother: "이선애" },
+    groom: {
+      name: "강명준",
+      firstName: "명준",
+      character: "장남",
+      father: "강복진",
+      mother: "김금산",
+    },
+    bride: {
+      name: "권소영",
+      firstName: "소영",
+      character: "장녀",
+      father: "권용덕",
+      mother: "이선애",
+    },
   },
   verse: {
     ref: "John 13:34",
@@ -50,12 +62,16 @@ const appConfig = {
     groomSide: [
       { label: "아버지 강복진", bank: "농협", number: "485058-52-169858" },
       { label: "어머니 김금산", bank: "농협", number: "485058-52-169858" },
-      { label: "신랑 강명준", bank: "국민은행", number: "012502-04-588075" },
+      { label: "신랑 강명준", bank: "국민", number: "012502-04-588075" },
     ],
     brideSide: [
-      { label: "아버지 권용덕", bank: "우리은행", number: "080-151155-02-001" },
-      { label: "어머니 이선애", bank: "우리은행", number: "080-151155-02-001" },
-      { label: "신부 권소영", bank: "카카오뱅크", number: "3333-28-1837834" },
+      {
+        label: "아버지 권용덕",
+        bank: "새마을금고",
+        number: "9003-2024-70521",
+      },
+      { label: "어머니 이선애", bank: "농협", number: "7210-7452-058363" },
+      { label: "신부 권소영", bank: "우리", number: "1002-561-831203" },
     ],
   },
   gallery: {

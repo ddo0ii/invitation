@@ -1,10 +1,10 @@
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import "./ThanksTo.css";
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Box,
-  Grid,
   IconButton,
   List,
   ListItem,
@@ -13,8 +13,6 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import "./ThanksTo.css";
 import { useState } from "react";
 import appConfig from "../app.config";
 
@@ -64,12 +62,15 @@ function AccountList({ title, items }) {
 
 function ThanksTo() {
   const [open, setOpen] = useState(false);
-  
+
   return (
     <Stack className="thanks" spacing={2}>
       <Typography className="thanks__desc">
-        직접 축하를 전하지 못하는 분들을 위해 부득이하게 계좌번호를 기재하게
-        되었습니다. 넓은 마음으로 양해 부탁드립니다.
+        직접 축하를 전하지 못하는 분들을 위해
+        <br />
+        부득이하게 계좌번호를 기재하게 되었습니다.
+        <br />
+        넓은 마음으로 양해 부탁드립니다.
       </Typography>
       <div className="thanks__grid">
         <div>

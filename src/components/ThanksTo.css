@@ -6,10 +6,13 @@
 
 .thanks__desc {
     color: #444;
+    text-align: center;
 }
 
 .thanks__grid {
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .thanks__acc .MuiAccordionSummary-root {

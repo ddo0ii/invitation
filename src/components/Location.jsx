@@ -7,8 +7,8 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import KakaoMap from "./KakaoMap";
 import appConfig from "../app.config";
+import KakaoMap from "./KakaoMap";
 
 function openLink(url) {
   window.open(url, "_blank", "noopener");
@@ -51,9 +51,6 @@ function Location() {
           티맵
         </Button>
       </Stack>
-      <Typography variant="subtitle1" fontWeight={700} gutterBottom>
-        오시는 길
-      </Typography>
       <Box>
         <Typography variant="subtitle1" fontWeight={700} gutterBottom>
           지하철 이용 시

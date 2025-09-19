@@ -20,6 +20,7 @@
 .hero-main {
     text-align: center;
     padding-top: var(--space-5);
+    padding-bottom: var(--space-5);
 }
 
 .wedding-caps {
@@ -62,6 +63,7 @@
     letter-spacing: 0.25em;
     text-align: center;
     margin: 0 0 var(--space-4);
+    color: #666464b3;
 }
 
 .section-subtitle {
