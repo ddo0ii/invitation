@@ -7,10 +7,16 @@ const theme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#1b5e20",
+      main: "#9BC4AA", // pastel sage
+      light: "#CFE3D6",
+      dark: "#6EA186",
+      contrastText: "#1a1a1a",
     },
     secondary: {
-      main: "#8d6e63",
+      main: "#F2CFD8", // pastel blush
+      light: "#F8E6EC",
+      dark: "#D9AABA",
+      contrastText: "#1a1a1a",
     },
     background: {
       default: "#ffffff",
@@ -22,6 +28,68 @@ const theme = createTheme({
     },
   },
   components: {
+    MuiButton: {
+      defaultProps: {
+        disableElevation: true,
+      },
+      styleOverrides: {
+        root: {
+          borderRadius: 50,
+          textTransform: "none",
+          fontWeight: 600,
+          paddingInline: 20,
+          paddingBlock: 10,
+        },
+        containedPrimary: {
+          backgroundColor: "#CFE3D6",
+          color: "#1a1a1a",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+          "&:hover": {
+            backgroundColor: "#B9D5C3",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+          },
+        },
+        containedSecondary: {
+          backgroundColor: "#F8E6EC",
+          color: "#1a1a1a",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+          "&:hover": {
+            backgroundColor: "#F3D8E1",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+          },
+        },
+        outlinedPrimary: {
+          color: "#3A6F43",
+          borderColor: "#B9D5C3",
+          backgroundColor: "rgba(155,196,170,0.08)",
+          "&:hover": {
+            borderColor: "#6EA186",
+            backgroundColor: "rgba(155,196,170,0.14)",
+          },
+        },
+        outlinedSecondary: {
+          borderColor: "#F2CFD8",
+          color: "#D9AABA",
+          backgroundColor: "rgba(242,207,216,0.10)",
+          "&:hover": {
+            borderColor: "#D9AABA",
+            backgroundColor: "rgba(242,207,216,0.16)",
+          },
+        },
+        textPrimary: {
+          color: "#6EA186",
+          "&:hover": {
+            backgroundColor: "rgba(155,196,170,0.10)",
+          },
+        },
+        textSecondary: {
+          color: "#D9AABA",
+          "&:hover": {
+            backgroundColor: "rgba(242,207,216,0.10)",
+          },
+        },
+      },
+    },
     MuiContainer: {
       defaultProps: {
         maxWidth: "md",
