@@ -66,6 +66,7 @@ const appConfig = {
         number: "250-20-409136",
       },
       { label: "어머니 김금산", bank: "국민", number: "244-21-0201-634" },
+      { label: "누님 강현정", bank: "신한", number: "110-296-811034" },
       { label: "신랑 강명준", bank: "기업", number: "010-4730-8877" },
     ],
     brideSide: [
