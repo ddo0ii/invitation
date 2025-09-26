@@ -60,17 +60,17 @@ const appConfig = {
   },
   accounts: {
     groomSide: [
-      { label: "아버지 강복진", bank: "농협", number: "485058-52-169858" },
-      { label: "어머니 김금산", bank: "농협", number: "485058-52-169858" },
-      { label: "신랑 강명준", bank: "국민", number: "012502-04-588075" },
+      {
+        label: "아버지 강복진 (스텐다드차타드)",
+        bank: "SC제일은행",
+        number: "250-20-409136",
+      },
+      { label: "어머니 김금산", bank: "국민", number: "244-21-0201-634" },
+      { label: "신랑 강명준", bank: "기업", number: "010-4730-8877" },
     ],
     brideSide: [
-      {
-        label: "아버지 권용덕",
-        bank: "새마을금고",
-        number: "9003-2024-70521",
-      },
-      { label: "어머니 이선애", bank: "농협", number: "7210-7452-058363" },
+      { label: "아버지 권용덕", bank: "농협", number: "302-0332-4466-21" },
+      { label: "어머니 이선애", bank: "농협", number: "721074-52-058363" },
       { label: "신부 권소영", bank: "우리", number: "1002-561-831203" },
     ],
   },
