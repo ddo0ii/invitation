@@ -61,8 +61,8 @@ const appConfig = {
   accounts: {
     groomSide: [
       {
-        label: "아버지 강복진 (스텐다드차타드)",
-        bank: "SC제일은행",
+        label: "아버지 강복진",
+        bank: "SC제일은행(스텐다드차타드)",
         number: "250-20-409136",
       },
       { label: "어머니 김금산", bank: "국민", number: "244-21-0201-634" },
