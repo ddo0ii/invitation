@@ -43,7 +43,7 @@
 
 .viewer__img {
     max-width: 100vw;
-    max-height: 90vh;
+    max-height: 85vh;
     object-fit: contain;
 }
 
@@ -109,7 +109,7 @@
 .viewer__count {
     position: absolute;
     left: 50%;
-    bottom: 12px;
+    bottom: 16px;
     transform: translateX(-50%);
     color: #fff;
     background: rgba(0, 0, 0, 0.5);

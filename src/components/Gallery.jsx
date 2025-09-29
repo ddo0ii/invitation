@@ -19,6 +19,9 @@ function Gallery() {
   const dragStartXRef = useRef(0);
   const scrollStartLeftRef = useRef(0);
 
+  // 뷰어 스와이프 제어 (한 번의 드래그에 한 번만 이동)
+  const viewerSwipe = useRef({ startX: 0, hasSwiped: false });
+
   // 이미지는 {thumb, full} 형태를 지원. 문자열이면 thumb를 '/thumb/'에 동일 파일명으로 맵핑, full은 원본 사용
   const toPair = (img) => {
     if (typeof img === "string") {
@@ -37,10 +40,12 @@ function Gallery() {
   }, []);
 
   const handlePrev = useCallback(() => {
+    if (!images.length) return;
     setCurrent((v) => (v - 1 + images.length) % images.length);
   }, [images.length]);
 
   const handleNext = useCallback(() => {
+    if (!images.length) return;
     setCurrent((v) => (v + 1) % images.length);
   }, [images.length]);
 
@@ -60,29 +65,14 @@ function Gallery() {
     }
   }, []);
 
-  // Arrow positions computed from image rect
-  const [, setArrowPos] = useState({});
-  const updateArrows = useCallback(() => {
-    const el = imgRef.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    setArrowPos({
-      top: r.top + r.height / 2,
-      left: r.left + 12,
-      right: window.innerWidth - (r.right + 12),
-    });
-  }, []);
+  // 다음/이전 이미지 미리 로드하여 전환 시 깜빡임 방지
   useEffect(() => {
-    if (!viewerOpen) return;
-    updateArrows();
-    const onResize = () => updateArrows();
-    window.addEventListener("resize", onResize);
-    window.addEventListener("orientationchange", onResize);
-    return () => {
-      window.removeEventListener("resize", onResize);
-      window.removeEventListener("orientationchange", onResize);
-    };
-  }, [viewerOpen, updateArrows, current]);
+    if (!images.length) return;
+    const nextImg = new Image();
+    const prevImg = new Image();
+    nextImg.src = images[(current + 1) % images.length]?.full;
+    prevImg.src = images[(current - 1 + images.length) % images.length]?.full;
+  }, [current, images]);
 
   useEffect(() => {
     const onKey = (e) => {
@@ -134,146 +124,149 @@ function Gallery() {
   }, []);
 
   return (
-    <Box className="gallery">
-      <Box ref={scrollRef} className="gallery__track">
-        {images.map((item, idx) => (
-          <Box key={(item.full || item.thumb) + idx} className="gallery__item">
-            <Box
-              component="img"
-              src={item.thumb}
-              alt="gallery"
-              loading="lazy"
-              decoding="async"
-              onClick={() => openViewer(idx)}
-              onError={(e) => {
-                // 썸네일이 없으면 원본으로 대체
-                e.currentTarget.src = item.full;
-              }}
-              className="gallery__img"
-            />
-          </Box>
-        ))}
-      </Box>
+      <Box className="gallery">
+        <Box ref={scrollRef} className="gallery__track">
+          {images.map((item, idx) => (
+              <Box key={(item.full || item.thumb) + idx} className="gallery__item">
+                <Box
+                    component="img"
+                    src={item.thumb}
+                    alt="gallery"
+                    loading="lazy"
+                    decoding="async"
+                    onClick={() => openViewer(idx)}
+                    onError={(e) => {
+                      // 썸네일이 없으면 원본으로 대체
+                      e.currentTarget.src = item.full;
+                    }}
+                    className="gallery__img"
+                />
+              </Box>
+          ))}
+        </Box>
 
-      <Dialog open={viewerOpen} onClose={() => setViewerOpen(false)} fullScreen>
-        <Box
-          ref={fullscreenRef}
-          sx={{
-            position: "relative",
-            width: "100%",
-            height: "100%",
-            backgroundColor: "black",
-            overflow: "hidden",
-          }}
-        >
-          {/* 드래그/클릭 네비게이션 */}
+        <Dialog open={viewerOpen} onClose={() => setViewerOpen(false)} fullScreen>
           <Box
-            className="viewer__hit"
-            onPointerDown={(e) => {
-              dragStartXRef.current = e.clientX;
-            }}
-            onPointerMove={(e) => {
-              if (e.buttons !== 1) return; // only while pressing
-              const dx = e.clientX - dragStartXRef.current;
-              if (Math.abs(dx) > 60) {
-                if (dx > 0) handlePrev();
-                else handleNext();
-                dragStartXRef.current = e.clientX; // reset to avoid multiple jumps
-              }
-            }}
-            onPointerUp={(e) => {
-              const dx = e.clientX - dragStartXRef.current;
-              if (Math.abs(dx) < 30) {
-                // 탭처럼 클릭 영역으로 이동
-                const w = e.currentTarget.clientWidth;
-                if (e.clientX < w * 0.33) handlePrev();
-                else if (e.clientX > w * 0.67) handleNext();
-              }
-            }}
-          />
-          <IconButton
-            aria-label="fullscreen"
-            onClick={toggleFullscreen}
-            className="viewer__btn viewer__btn--fs"
-            sx={{ position: "absolute", bottom: 16, right: 16, zIndex: 3 }}
-          >
-            {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
-          </IconButton>
-          <IconButton
-            aria-label="close"
-            onClick={() => setViewerOpen(false)}
-            className="viewer__btn viewer__btn--close"
-            sx={{ position: "absolute", top: 16, right: 16, zIndex: 3 }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <Box
-            sx={{
-              position: "absolute",
-              inset: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              pointerEvents: "none",
-            }}
-          >
-            <Box
+              ref={fullscreenRef}
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
+                position: "relative",
+                width: "100%",
+                height: "100%",
+                backgroundColor: "black",
+                overflow: "hidden",
               }}
+          >
+            {/* 드래그/클릭 네비게이션 */}
+            <Box
+                className="viewer__hit"
+                onPointerDown={(e) => {
+                  viewerSwipe.current.startX = e.clientX;
+                  viewerSwipe.current.hasSwiped = false;
+                }}
+                onPointerMove={(e) => {
+                  if (e.buttons !== 1) return; // only while pressing
+                  if (viewerSwipe.current.hasSwiped) return;
+                  const dx = e.clientX - viewerSwipe.current.startX;
+                  if (Math.abs(dx) > 60) {
+                    if (dx > 0) handlePrev();
+                    else handleNext();
+                    viewerSwipe.current.hasSwiped = true;
+                  }
+                }}
+                onPointerUp={(e) => {
+                  const dx = e.clientX - viewerSwipe.current.startX;
+                  if (!viewerSwipe.current.hasSwiped && Math.abs(dx) < 30) {
+                    // 탭처럼 클릭 영역으로 이동
+                    const w = e.currentTarget.clientWidth;
+                    if (e.clientX < w * 0.33) handlePrev();
+                    else if (e.clientX > w * 0.67) handleNext();
+                  }
+                }}
+            />
+            <IconButton
+                aria-label="fullscreen"
+                onClick={toggleFullscreen}
+                className="viewer__btn viewer__btn--fs"
+                sx={{ position: "absolute", bottom: 16, right: 16, zIndex: 3 }}
+            >
+              {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+            </IconButton>
+            <IconButton
+                aria-label="close"
+                onClick={() => setViewerOpen(false)}
+                className="viewer__btn viewer__btn--close"
+                sx={{ position: "absolute", top: 16, right: 16, zIndex: 3 }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <Box
+                sx={{
+                  position: "absolute",
+                  inset: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  pointerEvents: "none",
+                }}
             >
               <Box
-                ref={imgRef}
-                component="img"
-                src={images[current]?.full}
-                alt={`gallery-${current + 1}`}
-                className="viewer__img"
-                fetchpriority="high"
-                style={{ pointerEvents: "auto" }}
-              />
-              <Typography
-                className="viewer__count"
-                style={{ pointerEvents: "auto" }}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
               >
-                {current + 1} / {images.length}
-              </Typography>
+                <Box
+                    key={images[current]?.full}
+                    ref={imgRef}
+                    component="img"
+                    src={images[current]?.full}
+                    alt={`gallery-${current + 1}`}
+                    className="viewer__img"
+                    fetchpriority="high"
+                    style={{ pointerEvents: "auto" }}
+                />
+                <Typography
+                    className="viewer__count"
+                    style={{ pointerEvents: "auto" }}
+                >
+                  {current + 1} / {images.length}
+                </Typography>
+              </Box>
             </Box>
-          </Box>
 
-          {/* 화살표 버튼 - 컨테이너 기준 절대배치 */}
-          <IconButton
-            aria-label="prev"
-            onClick={handlePrev}
-            className="viewer__btn viewer__btn--prev"
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: 16,
-              transform: "translateY(-50%)",
-              zIndex: 3,
-            }}
-          >
-            <ChevronLeftIcon fontSize="large" />
-          </IconButton>
-          <IconButton
-            aria-label="next"
-            onClick={handleNext}
-            className="viewer__btn viewer__btn--next"
-            sx={{
-              position: "absolute",
-              top: "50%",
-              right: 16,
-              transform: "translateY(-50%)",
-              zIndex: 3,
-            }}
-          >
-            <ChevronRightIcon fontSize="large" />
-          </IconButton>
-        </Box>
-      </Dialog>
-    </Box>
+            {/* 화살표 버튼 - 컨테이너 기준 절대배치 */}
+            <IconButton
+                aria-label="prev"
+                onClick={handlePrev}
+                className="viewer__btn viewer__btn--prev"
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: 16,
+                  transform: "translateY(-50%)",
+                  zIndex: 3,
+                }}
+            >
+              <ChevronLeftIcon fontSize="large" />
+            </IconButton>
+            <IconButton
+                aria-label="next"
+                onClick={handleNext}
+                className="viewer__btn viewer__btn--next"
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  right: 16,
+                  transform: "translateY(-50%)",
+                  zIndex: 3,
+                }}
+            >
+              <ChevronRightIcon fontSize="large" />
+            </IconButton>
+          </Box>
+        </Dialog>
+      </Box>
   );
 }
 
