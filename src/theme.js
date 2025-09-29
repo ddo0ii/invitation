@@ -5,11 +5,11 @@ const theme = createTheme({
     fontFamily: "Gowun Dodum, sans-serif",
     body1: {
       fontSize: 14,
-      '@media (min-width:768px)': { fontSize: 16 },
+      "@media (min-width:768px)": { fontSize: 16 },
     },
     body2: {
       fontSize: 14,
-      '@media (min-width:768px)': { fontSize: 16 },
+      "@media (min-width:768px)": { fontSize: 16 },
     },
   },
   palette: {
@@ -42,7 +42,7 @@ const theme = createTheme({
       },
       styleOverrides: {
         root: {
-          borderRadius: 50,
+          borderRadius: 5,
           textTransform: "none",
           fontWeight: 600,
           paddingInline: 20,

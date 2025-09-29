@@ -5,6 +5,7 @@ import {
   accordionSummaryClasses,
   Box,
   Button,
+  ButtonGroup,
   Divider,
   List,
   ListItem,
@@ -42,6 +43,7 @@ function Location() {
           size="small"
           variant="outlined"
           onClick={() => openLink(appConfig.transport.mapLinks.naver)}
+          sx={{ flex: 1 }}
         >
           네이버 지도
         </Button>
@@ -49,6 +51,7 @@ function Location() {
           size="small"
           variant="outlined"
           onClick={() => openLink(appConfig.transport.mapLinks.kakaoNavi)}
+          sx={{ flex: 1 }}
         >
           카카오 내비
         </Button>
@@ -56,10 +59,12 @@ function Location() {
           size="small"
           variant="outlined"
           onClick={() => openLink(appConfig.transport.mapLinks.tmap)}
+          sx={{ flex: 1 }}
         >
           티맵
         </Button>
       </Stack>
+      <br />
       <Accordion
         disableGutters
         defaultExpanded

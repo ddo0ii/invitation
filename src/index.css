@@ -152,9 +152,13 @@ body {
 
 /* Responsive base font sizing */
 @media (min-width: 768px) {
-    body { font-size: var(--fz-lg); }
+    body {
+        font-size: var(--fz-lg);
+    }
 }
 
 @media (min-width: 1024px) {
-    body { font-size: var(--fz-lg); }
+    body {
+        font-size: var(--fz-lg);
+    }
 }

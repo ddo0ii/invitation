@@ -39,7 +39,8 @@ function AccountList({ title, items }) {
         expandIcon={<ExpandMoreIcon />}
         sx={{
           "&.MuiAccordionSummary-root": { boxShadow: "none" },
-          backgroundColor: "rgba(155,196,170,0.08)",
+          backgroundColor: "#fafafa",
+          // backgroundColor: "rgba(155,196,170,0.08)",
         }}
       >
         <Typography variant="subtitle1" fontWeight={700}>
@@ -77,12 +78,14 @@ function ThanksTo() {
   const [open, setOpen] = useState(false);
 
   return (
-    <Stack className="thanks" spacing={2}>
+    <Stack className="thanks">
       <Typography className="thanks__desc">
         직접 축하를 전하지 못하는 분들을 위해
-        <br />
+      </Typography>
+      <Typography className="thanks__desc">
         부득이하게 계좌번호를 기재하게 되었습니다.
-        <br />
+      </Typography>
+      <Typography className="thanks__desc">
         넓은 마음으로 양해 부탁드립니다.
       </Typography>
       <div className="thanks__grid">
