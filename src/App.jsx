@@ -53,11 +53,14 @@ function App() {
         <ThanksTo />
       </Section>
 
-      <Section id="guestbook" title="GUEST BOOK">
-        <Guestbook />
-      </Section>
+      {/*<Section id="guestbook" title="GUEST BOOK">*/}
+      {/*  <Guestbook />*/}
+      {/*</Section>*/}
 
-      <Section id="share" bg="#fafafa">
+      <Section
+        id="share"
+        // bg="#fafafa"
+      >
         <Share />
       </Section>
     </Stack>
