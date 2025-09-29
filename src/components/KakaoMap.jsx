@@ -43,7 +43,7 @@ function KakaoMap({ lat, lng, address, level = 3, markerText }) {
             marker.setMap(map);
             if (markerText) {
               const iw = new window.kakao.maps.InfoWindow({
-                content: `<div style="padding:6px 8px;">${markerText}</div>`,
+                content: `<div style="padding:4px 4px;font-size:12px;line-height:1.0;">${markerText}</div>`,
               });
               iw.open(map, marker);
             }

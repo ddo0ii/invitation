@@ -36,6 +36,31 @@ const theme = createTheme({
     },
   },
   components: {
+    MuiTextField: {
+      defaultProps: {
+        size: 'small',
+      },
+      styleOverrides: {
+        root: {
+          '& .MuiInputBase-input': {
+            fontSize: 14,
+          },
+          '& .MuiInputBase-input::placeholder': {
+            fontSize: 12,
+            opacity: 0.7,
+          },
+          '@media (min-width:768px)': {
+            '& .MuiInputBase-input': { fontSize: 16 },
+            '& .MuiInputBase-input::placeholder': { fontSize: 14 },
+          },
+        },
+      },
+    },
+    MuiRadio: {
+      defaultProps: {
+        size: 'small',
+      },
+    },
     MuiButton: {
       defaultProps: {
         disableElevation: true,

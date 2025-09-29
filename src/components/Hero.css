@@ -1,6 +1,8 @@
 .hero {
   position: relative;
+  /* prevent mobile toolbar resize causing video zoom */
   min-height: 100vh;
+  min-height: 100svh;
   overflow: hidden;
 }
 
@@ -13,6 +15,9 @@
   z-index: 0;
   pointer-events: none;
   filter: brightness(0.9);
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .hero__wash {
@@ -29,6 +34,17 @@
   z-index: 2; pointer-events: none;
   backdrop-filter: blur(2px);
 }
-.hero__fade-top { top: 0; height: 200px; background: linear-gradient(to bottom, #fff 0%, rgba(255,255,255,0.6) 40%, rgba(255,255,255,0) 100%); }
+.hero__fade-top { top: 0; height: 160px; background: linear-gradient(to bottom, #fff 0%, rgba(255,255,255,0.6) 40%, rgba(255,255,255,0) 100%); }
 .hero__fade-bottom { bottom: 0; height: 240px; background: linear-gradient(to top, #fff 0%, rgba(255,255,255,0.6) 40%, rgba(255,255,255,0) 100%); }
+
+/* remove section padding when hero used with section class */
+.section.hero {
+  padding: 0;
+}
+
+/* iOS/mobile tweak: avoid top hairline and zoom artifacts */
+@media (max-width: 767px) {
+  .hero__fade-top, .hero__fade-bottom { backdrop-filter: none; }
+  .hero__fade-top { background: linear-gradient(to bottom, #fff 0%, rgba(255,255,255,0.85) 60%, rgba(255,255,255,0) 100%); }
+}
 

@@ -5,27 +5,40 @@ import "./Hero.css";
 function Hero() {
   return (
     <Box className="hero-main">
-      <Typography
-        className="wedding-caps"
-        variant="cormorant-sc-medium"
-        sx={{ fontSize: { xs: "10px", sm: "12px" } }}
-      >
-        WEDDING INVITATION
-      </Typography>
-      <Box className="wedding-caps-name-box">
-        <Typography className="wedding-caps-name" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>
-          {appConfig.couple.groom.name}
-        </Typography>
-        <Typography className="wedding-caps-name" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>
-          |
-        </Typography>
-        <Typography className="wedding-caps-name" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>
-          {appConfig.couple.bride.name}
-        </Typography>
-      </Box>
       <Box className="section hero">
-        {/* Top title overlay - match reference */}
-        <Box sx={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 3, pt: { xs: 4, md: 6 }, textAlign: "center", color: "#1a1a1a" }}></Box>
+        {/* Top title overlay - shown above video on all devices */}
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 3,
+            pt: { xs: 3, md: 6 },
+            pb: { xs: 1, md: 3 },
+            textAlign: "center",
+            color: "#1a1a1a",
+          }}
+        >
+          <Typography
+            className="wedding-caps"
+            variant="cormorant-sc-medium"
+            sx={{ fontSize: { xs: "10px", sm: "12px" } }}
+          >
+            WEDDING INVITATION
+          </Typography>
+          <Box className="wedding-caps-name-box">
+            <Typography className="wedding-caps-name" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>
+              {appConfig.couple.groom.name}
+            </Typography>
+            <Typography className="wedding-caps-name" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>
+              |
+            </Typography>
+            <Typography className="wedding-caps-name" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>
+              {appConfig.couple.bride.name}
+            </Typography>
+          </Box>
+        </Box>
         <Box component="video" autoPlay muted loop playsInline src="./video/intro.mp4" aria-label="intro background video" className="hero__video" />
 
         <Box className="hero__wash" />

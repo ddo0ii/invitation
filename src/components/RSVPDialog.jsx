@@ -224,11 +224,12 @@ function RSVPDialog() {
               <FormControlLabel
                 control={
                   <Checkbox
+                    size="small"
                     checked={hideToday}
                     onChange={(e) => setHideToday(e.target.checked)}
                   />
                 }
-                label="오늘 하루 보지 않기"
+                label={<Typography sx={{ fontSize: 12 }}>오늘 하루 보지 않기</Typography>}
               />
             </Stack>
           ) : (
