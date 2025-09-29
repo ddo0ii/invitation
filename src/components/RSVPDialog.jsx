@@ -205,13 +205,11 @@ function RSVPDialog() {
         <DialogContent>
           {step === "intro" ? (
             <Stack spacing={3} alignItems="center" textAlign="center">
-              <Typography>
-                축하의 마음으로 참석해주시는
-                <br />
-                모든 분들을 귀하게 모실 수 있도록
-                <br />
-                참석 의사를 전달 부탁드립니다.
-              </Typography>
+              <Stack spacing={0.5}>
+                <Typography>축하의 마음으로 참석해주시는</Typography>
+                <Typography>모든 분들을 귀하게 모실 수 있도록</Typography>
+                <Typography>참석 의사를 전달 부탁드립니다.</Typography>
+              </Stack>
               <Box sx={{ width: "100%", borderTop: "1px solid #eee" }} />
               <Stack spacing={0.5}>
                 <Typography>{dateLabel}</Typography>
@@ -223,17 +221,6 @@ function RSVPDialog() {
                   {appConfig.couple.bride.name}
                 </Typography>
               </Stack>
-              <Button
-                variant="contained"
-                size="large"
-                onClick={() => {
-                  setStep("form");
-                  enableAudio();
-                }}
-                sx={{ mt: 1 }}
-              >
-                참석 의사 전달하기
-              </Button>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -318,26 +305,49 @@ function RSVPDialog() {
             </Stack>
           )}
         </DialogContent>
-        <DialogActions>
-          {step === "intro" ? (
-            <Button onClick={handleClose}>닫기</Button>
-          ) : (
-            <Stack
-              direction="row"
-              spacing={1}
+        <DialogActions sx={{ p: 0 }}>
+          <Stack direction="row" sx={{ width: "100%" }}>
+            <Button
+              onClick={handleClose}
               sx={{
-                px: 2,
-                pb: 2,
-                width: "100%",
-                justifyContent: "space-between",
+                flex: 1,
+                height: 50,
+                borderRadius: 0,
+                borderTop: 0.5,
+                borderColor: "#9BC4AA",
               }}
             >
-              <Button onClick={() => setStep("intro")}>뒤로</Button>
-              <Button variant="contained" onClick={handleSubmit}>
-                참석 의사 전달하기
+              닫기
+            </Button>
+            {step === "intro" ? (
+              <Button
+                onClick={() => {
+                  setStep("form");
+                  enableAudio();
+                }}
+                sx={{
+                  flex: 1,
+                  height: 50,
+                  borderRadius: 0,
+                }}
+                variant="contained"
+              >
+                참석 정보 전달하기
               </Button>
-            </Stack>
-          )}
+            ) : (
+              <Button
+                onClick={handleSubmit}
+                sx={{
+                  flex: 1,
+                  height: 50,
+                  borderRadius: 0,
+                }}
+                variant="contained"
+              >
+                참석 정보 전달하기
+              </Button>
+            )}
+          </Stack>
         </DialogActions>
       </Dialog>
       <Snackbar
