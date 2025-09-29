@@ -48,7 +48,7 @@ function Countdown() {
           </Grid>
         ))}
       </Grid>
-      <Typography>
+      <Typography sx={{ fontSize: { xs: 14, sm: 16 } }}>
         명준 ♥ 소영 님의 결혼식이 {diff.days}일 남았습니다.
       </Typography>
     </Stack>

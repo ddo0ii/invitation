@@ -5,6 +5,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Divider,
   IconButton,
   List,
   ListItem,
@@ -27,13 +28,25 @@ async function copy(text) {
 
 function AccountList({ title, items }) {
   return (
-    <Accordion disableGutters className="thanks__acc">
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+    <Accordion
+      disableGutters
+      defaultExpanded={false}
+      elevation={0}
+      className="thanks__acc"
+      sx={{ border: 1, borderColor: "#B9D5C3" }}
+    >
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        sx={{
+          "&.MuiAccordionSummary-root": { boxShadow: "none" },
+          backgroundColor: "rgba(155,196,170,0.08)",
+        }}
+      >
         <Typography variant="subtitle1" fontWeight={700}>
           {title}
         </Typography>
       </AccordionSummary>
-      <AccordionDetails>
+      <AccordionDetails sx={{ boxShadow: "none" }}>
         <List dense>
           {items.map((acc) => (
             <ListItem
