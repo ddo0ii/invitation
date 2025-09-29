@@ -13,7 +13,10 @@ function Intro() {
         gap: 2,
       }}
     >
-      <Typography fontWeight={700} sx={{ marginBottom: "20px", fontSize: { xs: 12, sm: 14 } }}>
+      <Typography
+        className="section-title"
+        sx={{ fontSize: { xs: "10px", sm: "12px" }, mb: 5 }}
+      >
         INVITATION
       </Typography>
       <Typography>서로 다른 두 사람이 만나</Typography>
