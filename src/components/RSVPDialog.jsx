@@ -206,23 +206,22 @@ function RSVPDialog() {
           {step === "intro" ? (
             <Stack spacing={3} alignItems="center" textAlign="center">
               <Typography>
-                축하의 마음으로
+                축하의 마음으로 참석해주시는
                 <br />
-                참석해주시는 모든 분들을
-                <br />
-                귀하게 모실 수 있도록
+                모든 분들을 귀하게 모실 수 있도록
                 <br />
                 참석 의사를 전달 부탁드립니다.
               </Typography>
               <Box sx={{ width: "100%", borderTop: "1px solid #eee" }} />
               <Stack spacing={0.5}>
+                <Typography>{dateLabel}</Typography>
+                <Typography>{appConfig.site.venue}</Typography>
+                <Typography>({appConfig.site.address})</Typography>
+                <br />
                 <Typography fontWeight={700}>
                   신랑 {appConfig.couple.groom.name} & 신부{" "}
                   {appConfig.couple.bride.name}
                 </Typography>
-                <Typography>{dateLabel}</Typography>
-                <Typography>{appConfig.site.venue}</Typography>
-                <Typography>({appConfig.site.address})</Typography>
               </Stack>
               <Button
                 variant="contained"
@@ -253,6 +252,7 @@ function RSVPDialog() {
                   value={side}
                   exclusive
                   onChange={(e, v) => v && setSide(v)}
+                  sx={{ width: "100%" }}
                 >
                   <ToggleButton value="groom">신랑측</ToggleButton>
                   <ToggleButton value="bride">신부측</ToggleButton>
