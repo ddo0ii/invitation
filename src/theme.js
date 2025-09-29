@@ -3,6 +3,14 @@ import { createTheme } from "@mui/material/styles";
 const theme = createTheme({
   typography: {
     fontFamily: "Gowun Dodum, sans-serif",
+    body1: {
+      fontSize: 14,
+      '@media (min-width:768px)': { fontSize: 16 },
+    },
+    body2: {
+      fontSize: 14,
+      '@media (min-width:768px)': { fontSize: 16 },
+    },
   },
   palette: {
     mode: "light",

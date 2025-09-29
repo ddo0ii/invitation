@@ -13,7 +13,7 @@ function Intro() {
         gap: 2,
       }}
     >
-      <Typography fontWeight={700} sx={{ marginBottom: "20px" }}>
+      <Typography fontWeight={700} sx={{ marginBottom: "20px", fontSize: { xs: 12, sm: 14 } }}>
         INVITATION
       </Typography>
       <Typography>서로 다른 두 사람이 만나</Typography>
@@ -21,10 +21,10 @@ function Intro() {
       <Typography>사랑과 믿음으로 영원을 약속하는 자리에 오셔서</Typography>
       <Typography>따뜻한 축복으로 함께해 주세요.</Typography>
       <Stack spacing={2} textAlign="center" marginTop={8}>
-        <Typography sx={{ fontSize: "18px", letterSpacing: 2 }}>
+        <Typography sx={{ fontSize: { xs: 14, sm: 16 }, letterSpacing: 1 }}>
           {groom.father} · {groom.mother} 의 {groom.character} {groom.firstName}
         </Typography>
-        <Typography sx={{ fontSize: "18px", letterSpacing: 2 }}>
+        <Typography sx={{ fontSize: { xs: 14, sm: 16 }, letterSpacing: 1 }}>
           {bride.father} · {bride.mother} 의 {bride.character} {bride.firstName}
         </Typography>
       </Stack>

@@ -15,11 +15,11 @@ function Verse() {
         alt="weddingIcon"
       />
       {appConfig.verse.lines.map((line) => (
-        <Typography key={line} fontWeight={700}>
+        <Typography key={line} fontWeight={700} sx={{ fontSize: { xs: 14, sm: 16 } }}>
           {line}
         </Typography>
       ))}
-      <Typography color="text.secondary">- {appConfig.verse.ref} -</Typography>
+      <Typography color="text.secondary" sx={{ fontSize: { xs: 12, sm: 14 } }}>- {appConfig.verse.ref} -</Typography>
     </Stack>
   );
 }

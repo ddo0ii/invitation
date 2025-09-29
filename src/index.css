@@ -1,3 +1,4 @@
+/* root variables */
 :root {
     /* spacing scale */
     --space-1: 4px;
@@ -15,6 +16,15 @@
     /* section widths */
     --container-max: 720px;
     --section-pad-y: 64px;
+
+    /* typography scale */
+    --fz-xxs: 10px;
+    --fz-xs: 12px;
+    --fz-sm: 13px;
+    --fz-md: 14px;
+    --fz-lg: 16px;
+    --fz-xl: 18px;
+    --fz-xxl: 22px;
 }
 
 .hero-main {
@@ -36,7 +46,7 @@
 }
 
 .wedding-caps-name {
-    font-size: 1em;
+    font-size: 0.9em;
     letter-spacing: 0.15em;
 }
 
@@ -70,6 +80,7 @@
     text-align: center;
     color: #666;
     margin-bottom: var(--space-6);
+    font-size: 0.95em;
 }
 
 /* 애니메이션 효과 */
@@ -132,8 +143,18 @@ body {
     overflow-x: hidden;
     background-color: #ffffff;
     color: #1a1a1a;
+    font-size: var(--fz-md);
 }
 
 #root {
     width: 100%;
+}
+
+/* Responsive base font sizing */
+@media (min-width: 768px) {
+    body { font-size: var(--fz-lg); }
+}
+
+@media (min-width: 1024px) {
+    body { font-size: var(--fz-lg); }
 }

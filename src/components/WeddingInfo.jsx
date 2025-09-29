@@ -16,17 +16,17 @@ function WeddingInfo() {
   return (
     <Box className="winfo">
       <Box className="winfo__card">
-        <Typography variant="h6" fontWeight={700}>
+        <Typography fontWeight={700} sx={{ fontSize: { xs: 14, sm: 16 } }}>
           WEDDING DATE
         </Typography>
-        <Typography>{dateLabel}</Typography>
+        <Typography sx={{ fontSize: { xs: 12, sm: 14 } }}>{dateLabel}</Typography>
       </Box>
       <Box className="winfo__card">
-        <Typography variant="h6" fontWeight={700}>
+        <Typography fontWeight={700} sx={{ fontSize: { xs: 14, sm: 16 } }}>
           LOCATION
         </Typography>
-        <Typography>{appConfig.site.address}</Typography>
-        <Typography color="text.secondary">{appConfig.site.venue}</Typography>
+        <Typography sx={{ fontSize: { xs: 12, sm: 14 } }}>{appConfig.site.address}</Typography>
+        <Typography color="text.secondary" sx={{ fontSize: { xs: 12, sm: 14 } }}>{appConfig.site.venue}</Typography>
       </Box>
     </Box>
   );

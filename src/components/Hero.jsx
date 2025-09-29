@@ -8,18 +8,18 @@ function Hero() {
       <Typography
         className="wedding-caps"
         variant="cormorant-sc-medium"
-        sx={{ fontSize: "0.6em" }}
+        sx={{ fontSize: { xs: "10px", sm: "12px" } }}
       >
         WEDDING INVITATION
       </Typography>
       <Box className="wedding-caps-name-box">
-        <Typography className="wedding-caps-name" sx={{ fontSize: "1em" }}>
+        <Typography className="wedding-caps-name" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>
           {appConfig.couple.groom.name}
         </Typography>
-        <Typography className="wedding-caps-name" sx={{ fontSize: "1em" }}>
+        <Typography className="wedding-caps-name" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>
           |
         </Typography>
-        <Typography className="wedding-caps-name" sx={{ fontSize: "1em" }}>
+        <Typography className="wedding-caps-name" sx={{ fontSize: { xs: "14px", sm: "16px" } }}>
           {appConfig.couple.bride.name}
         </Typography>
       </Box>
@@ -44,14 +44,11 @@ function Hero() {
         <Typography
           className="script-names"
           variant="windsong"
-          sx={{ fontSize: 25 }}
+          sx={{ fontSize: { xs: 22, sm: 26 } }}
         >
           {appConfig.site.mainCharacterEn}
         </Typography>
-        <Typography
-          sx={{ typography: { xs: "body2", sm: "subtitle1" } }}
-          color="text.secondary"
-        >
+        <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} color="text.secondary">
           {new Date(appConfig.site.dateTime).toLocaleString("ko-KR", {
             year: "numeric",
             month: "2-digit",
@@ -61,10 +58,7 @@ function Hero() {
             minute: "2-digit",
           })}
         </Typography>
-        <Typography
-          sx={{ typography: { xs: "body2", sm: "subtitle1" } }}
-          color="text.secondary"
-        >
+        <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} color="text.secondary">
           {appConfig.site.venue}
         </Typography>
       </Box>

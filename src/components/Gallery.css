@@ -115,7 +115,7 @@
     background: rgba(0, 0, 0, 0.5);
     padding: 4px 12px;
     border-radius: 16px;
-    font-size: 14px;
+    font-size: var(--fz-sm);
     z-index: 3;
 }
 
