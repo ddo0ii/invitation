@@ -1,8 +1,22 @@
 import { Box, Typography } from "@mui/material";
+import { useEffect } from "react";
 import appConfig from "../app.config";
 import "./Hero.css";
 
 function Hero() {
+  useEffect(() => {
+    // 비디오를 가장 먼저 받도록 preload hint 추가
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "video";
+    link.href = "./video/intro.mp4";
+    link.type = "video/mp4";
+    document.head.appendChild(link);
+    return () => {
+      if (link.parentNode) link.parentNode.removeChild(link);
+    };
+  }, []);
+
   return (
     <Box className="hero-main">
       <Box className="section hero">
@@ -39,7 +53,18 @@ function Hero() {
             </Typography>
           </Box>
         </Box>
-        <Box component="video" autoPlay muted loop playsInline src="./video/intro.mp4" aria-label="intro background video" className="hero__video" />
+        <Box
+          component="video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster="./thumb/1178.jpg"
+          src="./video/intro.mp4"
+          aria-label="intro background video"
+          className="hero__video"
+        />
 
         <Box className="hero__wash" />
         {/* top and bottom fade like reference */}
