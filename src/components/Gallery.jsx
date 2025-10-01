@@ -55,13 +55,27 @@ function Gallery() {
   const widths = responsive.widths || [600, 900, 1440, 2048];
   const sizesAttr = "(max-width: 768px) 100vw, (max-width: 1280px) 80vw, 100vw";
 
+  // 실제 리사이즈 파일 경로 구성: public/images/<w>/<original-path>
+  const buildResizedPath = (fullPath, w) => {
+    if (!fullPath) return undefined;
+    // fullPath는 './image/1178.jpg' 형태. './image/' → './images/<w>/'로 치환
+    if (fullPath.startsWith('./image/')) {
+      return fullPath.replace('./image/', `./images/${w}/`);
+    }
+    // '/invitation/image/1178.jpg' 같은 경우도 처리
+    if (fullPath.includes('/image/')) {
+      return fullPath.replace('/image/', `/images/${w}/`);
+    }
+    return fullPath;
+  };
+
   const buildSrcSet = useCallback((pair) => {
     if (!pair) return undefined;
     const candidates = [];
-    if (widths.includes(600) && pair.thumb) candidates.push(`${pair.thumb} 600w`);
-    if (widths.includes(900) && pair.thumb) candidates.push(`${pair.thumb} 900w`);
-    if (widths.includes(1440) && pair.full) candidates.push(`${pair.full} 1440w`);
-    if (widths.includes(2048) && pair.full) candidates.push(`${pair.full} 2048w`);
+    if (widths.includes(600)) candidates.push(`${buildResizedPath(pair.full, 600)} 600w`);
+    if (widths.includes(900)) candidates.push(`${buildResizedPath(pair.full, 900)} 900w`);
+    if (widths.includes(1440)) candidates.push(`${buildResizedPath(pair.full, 1440)} 1440w`);
+    if (widths.includes(2048)) candidates.push(`${buildResizedPath(pair.full, 2048)} 2048w`);
     return candidates.join(', ');
   }, [widths]);
   // horizontal scroller
@@ -142,7 +156,12 @@ function Gallery() {
     const configuredCap = appConfig?.gallery?.concurrencyCap;
     const baseCap = preloadAllAtOnce ? images.length : 4;
     const concurrency = Math.max(1, Math.min(baseCap, Number.isFinite(configuredCap) ? configuredCap : baseCap));
-    const srcList = images.map((i) => i.full).filter(Boolean);
+    // 프리로딩은 기기 픽셀 비율/뷰포트 폭을 고려하여 합리적 해상도 선택
+    const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
+    const vw = Math.max(document.documentElement.clientWidth || 360, 360);
+    const targetWidth = Math.min(2048, Math.ceil((vw * dpr) / 60) * 60); // 대략적인 버킷팅
+    const pickWidth = widths.reduce((acc, w) => (w >= targetWidth ? Math.min(acc, w) : acc), 2048);
+    const srcList = images.map((i) => buildResizedPath(i.full, pickWidth) || i.full).filter(Boolean);
     let cursor = 0;
 
     const run = async () => {
@@ -223,7 +242,7 @@ function Gallery() {
               <Box
               component="img"
               src={item.thumb}
-              srcSet={`${item.thumb} 600w, ${item.thumb} 900w`}
+              srcSet={`${buildResizedPath(item.full, 600)} 600w, ${buildResizedPath(item.full, 900)} 900w`}
               sizes={sizesAttr}
               alt="gallery"
               loading="lazy"
@@ -314,7 +333,7 @@ function Gallery() {
                 key={images[current]?.full}
                 ref={imgRef}
                 component="img"
-                src={images[current]?.full}
+                src={buildResizedPath(images[current]?.full, 1440) || images[current]?.full}
                 srcSet={buildSrcSet(images[current])}
                 sizes={sizesAttr}
                 alt={`gallery-${current + 1}`}
