@@ -5,14 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "yarn thumbs && yarn images:responsive",
+    "prebuild": "yarn thumbs && yarn images:responsive && yarn video:variants",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "deploy": "vite build && gh-pages -d dist",
     "thumbs": "node scripts/generate-thumbs.mjs public/image public/thumb --width=900 --quality=80",
     "thumbs:600": "node scripts/generate-thumbs.mjs public/image public/thumb --width=600 --quality=82",
-    "images:responsive": "node scripts/generate-responsive.mjs public/image public/images --widths=600,900,1440,2048 --quality=82"
+    "images:responsive": "node scripts/generate-responsive.mjs public/image public/images --widths=600,900,1440,2048 --quality=82",
+    "video:variants": "node scripts/generate-video-variants.mjs public/video/intro.mp4 public/video/variants --heights=480,720,1080"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -37,6 +38,8 @@
     "globals": "^16.3.0",
     "prettier": "^3.6.2",
     "sharp": "^0.34.4",
+    "ffmpeg-static": "^5.2.0",
+    "fluent-ffmpeg": "^2.1.3",
     "vite": "^7.1.2",
     "vite-plugin-svgr": "^4.5.0"
   }

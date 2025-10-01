@@ -1,16 +1,24 @@
 import { Box, Typography } from "@mui/material";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import appConfig from "../app.config";
 import "./Hero.css";
 
 function Hero() {
   const videoRef = useRef(null);
+  const pickVariant = useMemo(() => {
+    const vw = Math.max(document.documentElement.clientWidth || 360, 360);
+    const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
+    const effective = vw * dpr;
+    if (effective <= 640) return './video/variants/intro-480.mp4';
+    if (effective <= 1280) return './video/variants/intro-720.mp4';
+    return './video/variants/intro-1080.mp4';
+  }, []);
   useEffect(() => {
     // 비디오를 가장 먼저 받도록 preload hint 추가
     const link = document.createElement("link");
     link.rel = "preload";
     link.as = "video";
-    link.href = "./video/intro.mp4";
+    link.href = pickVariant;
     link.type = "video/mp4";
     document.head.appendChild(link);
     // 페이지 진입 즉시 재생 시도 (정책상 muted/inline 필요 - 이미 설정됨)
@@ -27,7 +35,7 @@ function Hero() {
     return () => {
       if (link.parentNode) link.parentNode.removeChild(link);
     };
-  }, []);
+  }, [pickVariant]);
 
   return (
     <Box className="hero-main">
@@ -82,7 +90,7 @@ function Hero() {
               }
             }
           }}
-          src="./video/intro.mp4"
+          src={pickVariant}
           aria-label="intro background video"
           className="hero__video"
         />
