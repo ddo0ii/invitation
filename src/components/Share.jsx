@@ -1,5 +1,6 @@
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { Button, Stack } from "@mui/material";
+import KakaoShare from "./KakaoShare";
 
 function Share() {
   const handleCopy = async () => {
@@ -12,10 +13,6 @@ function Share() {
     }
   };
 
-  const handleKakao = () => {
-    alert("카카오톡 공유는 추후 연동 예정입니다.");
-  };
-
   return (
     <Stack direction="column" spacing={1} justifyContent="center">
       <Button
@@ -25,9 +22,7 @@ function Share() {
       >
         링크 복사하기
       </Button>
-      <Button variant="outlined" onClick={handleKakao}>
-        카카오톡 공유
-      </Button>
+      <KakaoShare />
     </Stack>
   );
 }

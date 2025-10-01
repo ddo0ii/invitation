@@ -1,0 +1,41 @@
+.kakao-share-btn {
+    display: inline-flex;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background-color: #FEE500;
+    color: #3C1E1E;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    /*font-weight: 600;*/
+    /*font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;*/
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.kakao-share-btn:hover {
+    background-color: #FFEB3B;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.kakao-share-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.kakao-share-btn svg {
+    flex-shrink: 0;
+}
+
+/* 모바일에서 터치하기 쉽게 */
+@media (max-width: 768px) {
+    .kakao-share-btn {
+        padding: 14px 24px;
+        font-size: 16px;
+        min-height: 48px;
+    }
+}
