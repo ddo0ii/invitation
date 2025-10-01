@@ -22,6 +22,23 @@ function Gallery() {
   // 뷰어 스와이프 제어 (한 번의 드래그에 한 번만 이동)
   const viewerSwipe = useRef({ startX: 0, hasSwiped: false });
 
+  // 이미지 프리로딩 상태 관리
+  const preloadedSetRef = useRef(new Set());
+  const preloadImage = useCallback((src) => {
+    if (!src) return Promise.resolve();
+    if (preloadedSetRef.current.has(src)) return Promise.resolve();
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = img.onerror = () => {
+        preloadedSetRef.current.add(src);
+        resolve();
+      };
+      img.decoding = "async";
+      img.loading = "eager";
+      img.src = src;
+    });
+  }, []);
+
   // 이미지는 {thumb, full} 형태를 지원. 문자열이면 thumb를 '/thumb/'에 동일 파일명으로 맵핑, full은 원본 사용
   const toPair = (img) => {
     if (typeof img === "string") {
@@ -65,14 +82,72 @@ function Gallery() {
     }
   }, []);
 
-  // 다음/이전 이미지 미리 로드하여 전환 시 깜빡임 방지
+  // 현재 기준 근접 이미지(±3장) 선로딩으로 전환 지연 최소화
   useEffect(() => {
     if (!images.length) return;
-    const nextImg = new Image();
-    const prevImg = new Image();
-    nextImg.src = images[(current + 1) % images.length]?.full;
-    prevImg.src = images[(current - 1 + images.length) % images.length]?.full;
-  }, [current, images]);
+    const radius = 3;
+    for (let d = 1; d <= radius; d++) {
+      const nextIdx = (current + d) % images.length;
+      const prevIdx = (current - d + images.length) % images.length;
+      preloadImage(images[nextIdx]?.full);
+      preloadImage(images[prevIdx]?.full);
+    }
+  }, [current, images, preloadImage]);
+
+  // 초기 진입 시 상위 몇 장을 preload hint로 올려 초기 체감속도 개선
+  useEffect(() => {
+    if (!images.length) return;
+    const head = document.head;
+    const links = [];
+    const upfront = Math.min(3, images.length);
+    for (let i = 0; i < upfront; i++) {
+      const href = images[i]?.full;
+      if (!href) continue;
+      const link = document.createElement("link");
+      link.rel = "preload";
+      link.as = "image";
+      link.href = href;
+      head.appendChild(link);
+      links.push(link);
+      // 즉시 미리 내려받기 시작
+      preloadImage(href);
+    }
+    return () => {
+      links.forEach((l) => {
+        if (l.parentNode) l.parentNode.removeChild(l);
+      });
+    };
+  }, [images, preloadImage]);
+
+  // 전체 이미지 백그라운드 프리로딩 (기본 동시 4개, 옵션으로 전체 동시)
+  useEffect(() => {
+    if (!images.length) return;
+    let cancelled = false;
+    const preloadAllAtOnce = !!(appConfig?.gallery && appConfig.gallery.preloadAllAtOnce);
+    const concurrency = preloadAllAtOnce ? images.length : 4;
+    const srcList = images.map((i) => i.full).filter(Boolean);
+    let cursor = 0;
+
+    const run = async () => {
+      while (!cancelled && cursor < srcList.length) {
+        const index = cursor++;
+        const src = srcList[index];
+        // 이미 선로딩된 경우 skip
+        if (preloadedSetRef.current.has(src)) continue;
+        // 순차적으로 한 장씩 받아서 캐시 채우기
+        // 오류여도 캐시에 남거나 다음으로 진행
+        // eslint-disable-next-line no-await-in-loop
+        await preloadImage(src);
+      }
+    };
+
+    const runners = Array.from({ length: Math.min(concurrency, srcList.length) }, run);
+    Promise.allSettled(runners);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [images, preloadImage]);
 
   useEffect(() => {
     const onKey = (e) => {

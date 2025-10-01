@@ -76,6 +76,7 @@ const appConfig = {
     ],
   },
   gallery: {
+    preloadAllAtOnce: true,
     images: [
       "./image/1178.jpg",
       "./image/1829.jpg",
