@@ -1,9 +1,10 @@
 import { Box, Typography } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import appConfig from "../app.config";
 import "./Hero.css";
 
 function Hero() {
+  const videoRef = useRef(null);
   useEffect(() => {
     // 비디오를 가장 먼저 받도록 preload hint 추가
     const link = document.createElement("link");
@@ -12,6 +13,17 @@ function Hero() {
     link.href = "./video/intro.mp4";
     link.type = "video/mp4";
     document.head.appendChild(link);
+    // 페이지 진입 즉시 재생 시도 (정책상 muted/inline 필요 - 이미 설정됨)
+    const tryPlay = () => {
+      const el = videoRef.current;
+      if (!el) return;
+      const p = el.play();
+      if (p && typeof p.catch === 'function') {
+        p.catch(() => {/* ignore autoplay policy rejections */});
+      }
+    };
+    // 약간 지연 후 한 번 더 시도 (소스 연결 직후)
+    setTimeout(tryPlay, 0);
     return () => {
       if (link.parentNode) link.parentNode.removeChild(link);
     };
@@ -60,7 +72,16 @@ function Hero() {
           loop
           playsInline
           preload="auto"
-          poster="./thumb/1178.jpg"
+          ref={videoRef}
+          onCanPlay={() => {
+            const el = videoRef.current;
+            if (el && el.paused) {
+              const p = el.play();
+              if (p && typeof p.catch === 'function') {
+                p.catch(() => {/* ignore */});
+              }
+            }
+          }}
           src="./video/intro.mp4"
           aria-label="intro background video"
           className="hero__video"
