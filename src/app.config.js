@@ -77,6 +77,14 @@ const appConfig = {
   },
   gallery: {
     preloadAllAtOnce: true,
+    concurrencyCap: 12,
+    responsive: {
+      // 클라이언트에서 구성할 소스셋 해상도 목록(가장 작은 것부터)
+      widths: [600, 900, 1440, 2048],
+      // thumb(작은 썸네일)과 full(원본/대형)의 기준 경로
+      // 기존 자산 구조를 유지: thumb는 public/thumb, full은 public/image
+      useThumbAsSmall: true,
+    },
     images: [
       "./image/1178.jpg",
       "./image/1829.jpg",

@@ -43,12 +43,27 @@ function Gallery() {
   const toPair = (img) => {
     if (typeof img === "string") {
       const url = img;
-      const thumb = url.replace("/image/", "/thumb/");
+      const thumb = (url.includes("/image/") || url.includes("./image/"))
+        ? url.replace("/image/", "/thumb/").replace("./image/", "./thumb/")
+        : url;
       return { thumb, full: url };
     }
     return img;
   };
   const images = (appConfig.gallery.images || []).map(toPair);
+  const responsive = appConfig?.gallery?.responsive || {};
+  const widths = responsive.widths || [600, 900, 1440, 2048];
+  const sizesAttr = "(max-width: 768px) 100vw, (max-width: 1280px) 80vw, 100vw";
+
+  const buildSrcSet = useCallback((pair) => {
+    if (!pair) return undefined;
+    const candidates = [];
+    if (widths.includes(600) && pair.thumb) candidates.push(`${pair.thumb} 600w`);
+    if (widths.includes(900) && pair.thumb) candidates.push(`${pair.thumb} 900w`);
+    if (widths.includes(1440) && pair.full) candidates.push(`${pair.full} 1440w`);
+    if (widths.includes(2048) && pair.full) candidates.push(`${pair.full} 2048w`);
+    return candidates.join(', ');
+  }, [widths]);
   // horizontal scroller
 
   const openViewer = useCallback((index) => {
@@ -124,7 +139,9 @@ function Gallery() {
     if (!images.length) return;
     let cancelled = false;
     const preloadAllAtOnce = !!(appConfig?.gallery && appConfig.gallery.preloadAllAtOnce);
-    const concurrency = preloadAllAtOnce ? images.length : 4;
+    const configuredCap = appConfig?.gallery?.concurrencyCap;
+    const baseCap = preloadAllAtOnce ? images.length : 4;
+    const concurrency = Math.max(1, Math.min(baseCap, Number.isFinite(configuredCap) ? configuredCap : baseCap));
     const srcList = images.map((i) => i.full).filter(Boolean);
     let cursor = 0;
 
@@ -203,9 +220,11 @@ function Gallery() {
       <Box ref={scrollRef} className="gallery__track">
         {images.map((item, idx) => (
           <Box key={(item.full || item.thumb) + idx} className="gallery__item">
-            <Box
+              <Box
               component="img"
               src={item.thumb}
+              srcSet={`${item.thumb} 600w, ${item.thumb} 900w`}
+              sizes={sizesAttr}
               alt="gallery"
               loading="lazy"
               decoding="async"
@@ -296,9 +315,11 @@ function Gallery() {
                 ref={imgRef}
                 component="img"
                 src={images[current]?.full}
+                srcSet={buildSrcSet(images[current])}
+                sizes={sizesAttr}
                 alt={`gallery-${current + 1}`}
                 className="viewer__img"
-                fetchpriority="high"
+                fetchPriority="high"
                 style={{ pointerEvents: "auto" }}
               />
               <Typography
