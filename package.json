@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "yarn thumbs && yarn images:responsive && yarn video:variants",
+    "prebuild": "yarn thumbs && yarn images:responsive && yarn video:variants && yarn video:variants:webm",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -13,7 +13,8 @@
     "thumbs": "node scripts/generate-thumbs.mjs public/image public/thumb --width=900 --quality=80",
     "thumbs:600": "node scripts/generate-thumbs.mjs public/image public/thumb --width=600 --quality=82",
     "images:responsive": "node scripts/generate-responsive.mjs public/image public/images --widths=600,900,1440,2048 --quality=82",
-    "video:variants": "node scripts/generate-video-variants.mjs public/video/intro.mp4 public/video/variants --heights=480,720,1080"
+    "video:variants": "node scripts/generate-video-variants.mjs public/video/intro.mp4 public/video/variants --heights=240,360,480,720 --force",
+    "video:variants:webm": "node scripts/generate-video-variants-webm.mjs public/video/intro.mp4 public/video/variants --heights=240,360,480,720 --force"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

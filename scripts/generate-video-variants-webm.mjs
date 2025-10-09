@@ -1,13 +1,12 @@
 #!/usr/bin/env node
 /*
 Usage:
-  node scripts/generate-video-variants.mjs <srcFile> <outDir> [--heights=360,480,720] [--force]
+  node scripts/generate-video-variants-webm.mjs <srcFile> <outDir> [--heights=240,360,480,720] [--force]
 
 Example:
-  node scripts/generate-video-variants.mjs public/video/intro.mp4 public/video/variants --heights=360,480,720 --force
+  node scripts/generate-video-variants-webm.mjs public/video/intro.mp4 public/video/variants --heights=240,360,480,720 --force
 
-Generates H.264 MP4 variants with faststart for quick playback.
-Skips work if outputs are newer than the input (unless --force).
+Generates VP9 WebM variants. Skips work if outputs are newer than input unless --force.
 */
 import fs from 'fs/promises'
 import path from 'path'
@@ -42,21 +41,19 @@ async function exists(p) {
 async function transcodeVariant(src, out, height) {
   await ensureDir(path.dirname(out))
   return new Promise((resolve, reject) => {
-    const crf = height <= 240 ? 33 : height <= 360 ? 31 : height <= 480 ? 29 : 27
+    // VP9 CRF: 0(best) ~ 63(worst). 낮을수록 고품질
+    const crf = height <= 240 ? 34 : height <= 360 ? 32 : height <= 480 ? 30 : 28
     ffmpeg(src)
-      .videoCodec('libx264')
+      .videoCodec('libvpx-vp9')
       .noAudio()
       .fps(24)
       .size(`?x${height}`)
       .outputOptions([
-        '-movflags +faststart',
-        '-preset slow',
-        '-profile:v main',
-        '-pix_fmt yuv420p',
+        '-b:v 0', // CRF 모드
         `-crf ${crf}`,
-        '-tune film',
-        '-g 48',
-        '-sc_threshold 0',
+        '-row-mt 1',
+        '-cpu-used 4', // 인코딩 속도/효율 밸런스
+        '-deadline good',
       ])
       .on('end', resolve)
       .on('error', reject)
@@ -67,7 +64,7 @@ async function transcodeVariant(src, out, height) {
 async function main() {
   const [,, srcFileArg, outDirArg] = process.argv
   if (!srcFileArg || !outDirArg) {
-    console.error('Usage: node scripts/generate-video-variants.mjs <srcFile> <outDir> [--heights=360,480,720] [--force]')
+    console.error('Usage: node scripts/generate-video-variants-webm.mjs <srcFile> <outDir> [--heights=240,360,480,720] [--force]')
     process.exit(1)
   }
   const cwd = process.cwd()
@@ -80,12 +77,11 @@ async function main() {
   const base = path.basename(srcFile, path.extname(srcFile))
 
   for (const h of heights) {
-    const outPath = path.join(outDir, `${base}-${h}.mp4`)
+    const outPath = path.join(outDir, `${base}-${h}.webm`)
     const outOk = await exists(outPath)
     if (outOk && !force) {
       const outStat = await fs.stat(outPath)
       if (outStat.mtimeMs >= srcStat.mtimeMs) {
-        // up-to-date
         continue
       }
     }
@@ -93,7 +89,7 @@ async function main() {
     await transcodeVariant(srcFile, outPath, h)
   }
 
-  console.log('Done generating video variants.')
+  console.log('Done generating webm variants.')
 }
 
 main().catch((e) => {

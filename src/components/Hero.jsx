@@ -5,13 +5,62 @@ import "./Hero.css";
 
 function Hero() {
   const videoRef = useRef(null);
+  // 자동재생 안전 유틸: 정책 위반 에러는 무시하고 muted/inline 보장
+  const attemptAutoplay = () => {
+    const el = videoRef.current;
+    if (!el) return;
+    el.muted = true;
+    el.setAttribute('muted', '');
+    el.playsInline = true;
+    el.setAttribute('playsinline', '');
+    el.autoplay = true;
+    const p = el.play();
+    if (p && typeof p.catch === 'function') {
+      p.catch(() => {});
+    }
+  };
   const pickVariant = useMemo(() => {
     const vw = Math.max(document.documentElement.clientWidth || 360, 360);
     const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
     const effective = vw * dpr;
-    if (effective <= 640) return './video/variants/intro-480.mp4';
-    if (effective <= 1280) return './video/variants/intro-720.mp4';
-    return './video/variants/intro-1080.mp4';
+    // 첫 시작은 더 가볍게: 240p/360p 우선
+    if (effective <= 420) return './video/variants/intro-240.mp4';
+    if (effective <= 700) return './video/variants/intro-360.mp4';
+    if (effective <= 1000) return './video/variants/intro-480.mp4';
+    return './video/variants/intro-720.mp4';
+  }, []);
+
+  // 네트워크 상태에 따라 상향 전환(프로그레시브 업그레이드)
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el) return;
+    const connection = navigator.connection || navigator.webkitConnection || navigator.mozConnection;
+    const downlink = connection?.downlink || 1.0; // Mbps
+    const upgrade = () => {
+      // 이미 최고 해상도면 종료
+      if (el.currentSrc.includes('intro-720')) return;
+      // 네트워크 여유가 있으면 480 또는 720으로 업그레이드
+      if (downlink >= 5) {
+        const base = './video/variants/intro-720';
+        const webm = el.querySelector('source[type="video/webm"]');
+        const mp4 = el.querySelector('source[type="video/mp4"]');
+        if (webm) webm.src = `${base}.webm`;
+        if (mp4) mp4.src = `${base}.mp4`;
+        el.load();
+        attemptAutoplay();
+      } else if (downlink >= 2.5 && !el.currentSrc.includes('intro-480')) {
+        const base = './video/variants/intro-480';
+        const webm = el.querySelector('source[type="video/webm"]');
+        const mp4 = el.querySelector('source[type="video/mp4"]');
+        if (webm) webm.src = `${base}.webm`;
+        if (mp4) mp4.src = `${base}.mp4`;
+        el.load();
+        attemptAutoplay();
+      }
+    };
+    // 초기 재생 후 약간의 여유를 두고 업그레이드 시도
+    const t = setTimeout(upgrade, 1200);
+    return () => clearTimeout(t);
   }, []);
   useEffect(() => {
     // 비디오를 가장 먼저 받도록 preload hint 추가
@@ -22,18 +71,24 @@ function Hero() {
     link.type = "video/mp4";
     document.head.appendChild(link);
     // 페이지 진입 즉시 재생 시도 (정책상 muted/inline 필요 - 이미 설정됨)
-    const tryPlay = () => {
-      const el = videoRef.current;
-      if (!el) return;
-      const p = el.play();
-      if (p && typeof p.catch === 'function') {
-        p.catch(() => {/* ignore autoplay policy rejections */});
-      }
-    };
+    const tryPlay = () => attemptAutoplay();
     // 약간 지연 후 한 번 더 시도 (소스 연결 직후)
     setTimeout(tryPlay, 0);
+    // 사용자 제스처 fallback: 첫 상호작용 시 재생 재시도
+    const onUserGesture = () => {
+      tryPlay();
+      window.removeEventListener('pointerdown', onUserGesture);
+      window.removeEventListener('keydown', onUserGesture);
+      window.removeEventListener('touchstart', onUserGesture);
+    };
+    window.addEventListener('pointerdown', onUserGesture, { once: true });
+    window.addEventListener('keydown', onUserGesture, { once: true });
+    window.addEventListener('touchstart', onUserGesture, { once: true });
     return () => {
       if (link.parentNode) link.parentNode.removeChild(link);
+      window.removeEventListener('pointerdown', onUserGesture);
+      window.removeEventListener('keydown', onUserGesture);
+      window.removeEventListener('touchstart', onUserGesture);
     };
   }, [pickVariant]);
 
@@ -82,18 +137,15 @@ function Hero() {
           preload="auto"
           ref={videoRef}
           onCanPlay={() => {
-            const el = videoRef.current;
-            if (el && el.paused) {
-              const p = el.play();
-              if (p && typeof p.catch === 'function') {
-                p.catch(() => {/* ignore */});
-              }
-            }
+            attemptAutoplay();
           }}
-          src={pickVariant}
           aria-label="intro background video"
           className="hero__video"
-        />
+        >
+          {/* WebM 우선, MP4 폴백 */}
+          <source src={pickVariant.replace('.mp4', '.webm')} type="video/webm" />
+          <source src={pickVariant} type="video/mp4" />
+        </Box>
 
         <Box className="hero__wash" />
         {/* top and bottom fade like reference */}

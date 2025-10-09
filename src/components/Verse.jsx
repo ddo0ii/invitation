@@ -1,5 +1,6 @@
 import { Stack, Typography } from "@mui/material";
-import weddingIcon from "../../public/icon/wedding.svg";
+// BASE_URL(/invitation/)을 고려해 퍼블릭 자산 경로를 생성
+const weddingIcon = `${import.meta.env.BASE_URL}icon/wedding.svg`;
 import appConfig from "../app.config";
 
 function Verse() {
