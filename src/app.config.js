@@ -55,7 +55,7 @@ const appConfig = {
     coords: { lat: 37.525, lng: 126.872 },
     mapLinks: {
       naver: "https://naver.me/FZ2iObZY",
-      kakaoNavi: "https://kko.kakao.com/B89rdRvTtm",
+      kakaoNavi: "https://kko.kakao.com/F2AfBbbsYJ",
       tmap: "https://tmap.life/e0412e46",
     },
   },
