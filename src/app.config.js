@@ -56,7 +56,7 @@ const appConfig = {
     mapLinks: {
       naver: "https://naver.me/FZ2iObZY",
       kakaoNavi: "https://kko.kakao.com/F2AfBbbsYJ",
-      tmap: "https://tmap.life/e0412e46",
+      tmap: "https://tmap.life/b26f90f6",
     },
   },
   accounts: {
