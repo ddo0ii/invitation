@@ -39,15 +39,14 @@ function AudioToggle({ src = "./audio/TrackTribe.mp3" }) {
     document.addEventListener("pointerdown", unlock, { capture: true });
     document.addEventListener("touchstart", unlock, { capture: true });
     document.addEventListener("mousedown", unlock, { capture: true });
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") unlock();
-    }, { capture: true });
+    const onKey = (e) => { if (e.key === "Enter" || e.key === " ") unlock(); };
+    document.addEventListener("keydown", onKey, { capture: true });
 
     return () => {
       document.removeEventListener("pointerdown", unlock, true);
       document.removeEventListener("touchstart", unlock, true);
       document.removeEventListener("mousedown", unlock, true);
-      document.removeEventListener("keydown", unlock, true);
+      document.removeEventListener("keydown", onKey, true);
       audioEl.pause();
     };
   }, [src]);

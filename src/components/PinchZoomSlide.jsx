@@ -1,12 +1,12 @@
 import { useRef } from "react";
-import { a, useSpring } from "@react-spring/web";
+import { a, useSpring, to } from "@react-spring/web";
 import { usePinch, useDrag } from "@use-gesture/react";
 
 function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));
 }
 
-function PinchZoomSlide({ src, alt, onClick }) {
+function PinchZoomSlide({ src, alt, onClick, srcSet, sizes }) {
   const containerRef = useRef(null);
   const [{ x, y, scale }, api] = useSpring(() => ({ x: 0, y: 0, scale: 1, config: { tension: 300, friction: 30 } }));
 
@@ -38,6 +38,10 @@ function PinchZoomSlide({ src, alt, onClick }) {
     return memo;
   }, { target: containerRef, scaleBounds: { min: 1, max: 3 }, rubberband: true });
 
+  const srcSetAttr = Array.isArray(srcSet)
+    ? srcSet.map((s) => `${s.src} ${s.width}w`).join(", ")
+    : srcSet;
+
   return (
     <div
       ref={containerRef}
@@ -56,15 +60,20 @@ function PinchZoomSlide({ src, alt, onClick }) {
       <a.img
         src={src}
         alt={alt}
+        srcSet={srcSetAttr}
+        sizes={sizes}
         style={{
           willChange: "transform",
-          transform: scale.to((s) => `translate3d(${x.get()}px, ${y.get()}px, 0) scale(${s})`),
+          transform: to([x, y, scale], (xv, yv, s) => `translate3d(${xv}px, ${yv}px, 0) scale(${s})`),
           maxWidth: "100%",
           maxHeight: "100%",
           objectFit: "contain",
           userSelect: "none",
           pointerEvents: "auto",
         }}
+        decoding="async"
+        loading="eager"
+        fetchPriority="high"
         draggable={false}
       />
     </div>

@@ -104,14 +104,14 @@ function Gallery() {
     }
   }, [images, preloadImage]);
 
-  // 전체 이미지 백그라운드 프리로딩 (동시 3개)
+  // 전체 이미지 백그라운드 프리로딩 (동시 2개, 네트워크 절약)
   useEffect(() => {
     if (!images.length) return;
     let cancelled = false;
     const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
     const vw = Math.max(document.documentElement.clientWidth || 360, 360);
-    const targetWidth = Math.min(1440, Math.ceil((vw * dpr) / 60) * 60);
-    const pickWidth = widths.reduce((acc, w) => (w >= targetWidth ? Math.min(acc, w) : acc), 1440);
+    const targetWidth = Math.min(900, Math.ceil((vw * dpr) / 60) * 60);
+    const pickWidth = widths.reduce((acc, w) => (w >= targetWidth ? Math.min(acc, w) : acc), 900);
     const srcList = images.map((i) => buildResizedPath(i.full, pickWidth) || i.full).filter(Boolean);
     let cursor = 0;
 
@@ -125,7 +125,7 @@ function Gallery() {
       }
     };
 
-    const runners = Array.from({ length: Math.min(3, srcList.length) }, run);
+    const runners = Array.from({ length: Math.min(2, srcList.length) }, run);
     Promise.allSettled(runners);
     return () => {
       cancelled = true;
@@ -135,7 +135,7 @@ function Gallery() {
   // Lightbox 슬라이드 구성 (responsive srcset 포함)
   const slides = useMemo(() => {
     return images.map((pair, idx) => {
-      const src = buildResizedPath(pair.full, 1440) || pair.full;
+      const src = buildResizedPath(pair.full, 900) || pair.full; // 초기엔 900px로 가볍게
       const srcSet = [];
       if (widths.includes(600)) srcSet.push({ src: buildResizedPath(pair.full, 600) || pair.full, width: 600 });
       if (widths.includes(900)) srcSet.push({ src: buildResizedPath(pair.full, 900) || pair.full, width: 900 });
@@ -217,8 +217,8 @@ function Gallery() {
         controller={{ closeOnBackdropClick: true }}
         animation={{ fade: 300 }}
         render={{
-          slide: ({ slide, rect, index }) => (
-            <PinchZoomSlide src={slide.src} alt={slide.alt} onClick={() => {}} />
+          slide: ({ slide }) => (
+            <PinchZoomSlide src={slide.src} alt={slide.alt} srcSet={slide.srcSet} sizes={slide.sizes} onClick={() => {}} />
           ),
         }}
         on={{
