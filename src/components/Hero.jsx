@@ -23,10 +23,9 @@ function Hero() {
     const vw = Math.max(document.documentElement.clientWidth || 360, 360);
     const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
     const effective = vw * dpr;
-    // 첫 시작은 더 가볍게: 240p/360p 우선
-    if (effective <= 420) return './video/variants/intro-240.mp4';
-    if (effective <= 700) return './video/variants/intro-360.mp4';
-    if (effective <= 1000) return './video/variants/intro-480.mp4';
+    // 초기 화질을 한 단계 상향: 360p/480p 우선
+    if (effective <= 420) return './video/variants/intro-360.mp4';
+    if (effective <= 800) return './video/variants/intro-480.mp4';
     return './video/variants/intro-720.mp4';
   }, []);
 
@@ -39,8 +38,8 @@ function Hero() {
     const upgrade = () => {
       // 이미 최고 해상도면 종료
       if (el.currentSrc.includes('intro-720')) return;
-      // 네트워크 여유가 있으면 480 또는 720으로 업그레이드
-      if (downlink >= 5) {
+      // 네트워크 여유가 있으면 480 또는 720으로 업그레이드 (임계값 완화)
+      if (downlink >= 3) {
         const base = './video/variants/intro-720';
         const webm = el.querySelector('source[type="video/webm"]');
         const mp4 = el.querySelector('source[type="video/mp4"]');
@@ -48,7 +47,7 @@ function Hero() {
         if (mp4) mp4.src = `${base}.mp4`;
         el.load();
         attemptAutoplay();
-      } else if (downlink >= 2.5 && !el.currentSrc.includes('intro-480')) {
+      } else if (downlink >= 1.5 && !el.currentSrc.includes('intro-480')) {
         const base = './video/variants/intro-480';
         const webm = el.querySelector('source[type="video/webm"]');
         const mp4 = el.querySelector('source[type="video/mp4"]');
@@ -59,7 +58,7 @@ function Hero() {
       }
     };
     // 초기 재생 후 약간의 여유를 두고 업그레이드 시도
-    const t = setTimeout(upgrade, 1200);
+    const t = setTimeout(upgrade, 600);
     return () => clearTimeout(t);
   }, []);
   useEffect(() => {
