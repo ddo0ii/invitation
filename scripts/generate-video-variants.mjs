@@ -42,7 +42,8 @@ async function exists(p) {
 async function transcodeVariant(src, out, height) {
   await ensureDir(path.dirname(out))
   return new Promise((resolve, reject) => {
-    const crf = height <= 240 ? 33 : height <= 360 ? 31 : height <= 480 ? 29 : 27
+    // 더 높은 화질을 위해 CRF 하향(작은 값이 고화질). 1080p 고려 포함
+    const crf = height <= 240 ? 31 : height <= 360 ? 29 : height <= 480 ? 27 : height <= 720 ? 25 : 24
     ffmpeg(src)
       .videoCodec('libx264')
       .noAudio()

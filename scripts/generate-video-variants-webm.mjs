@@ -41,8 +41,8 @@ async function exists(p) {
 async function transcodeVariant(src, out, height) {
   await ensureDir(path.dirname(out))
   return new Promise((resolve, reject) => {
-    // VP9 CRF: 0(best) ~ 63(worst). 낮을수록 고품질
-    const crf = height <= 240 ? 34 : height <= 360 ? 32 : height <= 480 ? 30 : 28
+    // VP9 CRF: 0(best) ~ 63(worst). 낮을수록 고품질 (품질 상향)
+    const crf = height <= 240 ? 32 : height <= 360 ? 30 : height <= 480 ? 28 : height <= 720 ? 27 : 26
     ffmpeg(src)
       .videoCodec('libvpx-vp9')
       .noAudio()
