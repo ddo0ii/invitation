@@ -100,6 +100,25 @@ function AudioToggle({ src = "./audio/TrackTribe.mp3" }) {
             backgroundColor: "white",
             boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
             pointerEvents: "auto",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            position: "fixed",
+            width: 56,
+            height: 56,
+            minWidth: 56,
+            minHeight: 56,
+            lineHeight: 1,
+            p: 0,
+            borderRadius: "50%",
+            overflow: "hidden",
+            '& svg': {
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              fontSize: 24,
+            },
           }}
         >
           {isMuted ? <VolumeOffIcon /> : <VolumeUpIcon />}
