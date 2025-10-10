@@ -9,106 +9,70 @@ function AudioToggle({ src = "./audio/TrackTribe.mp3" }) {
   const [isMuted, setIsMuted] = useState(true);
   const [hiddenByLightbox, setHiddenByLightbox] = useState(false);
 
-  // 오디오 설정 + 사용자 상호작용 대기
+  // 오디오 초기화 + 첫 사용자 제스처에서 재생(음소거 해제)
   useEffect(() => {
     const audioEl = audioRef.current;
     if (!audioEl) return;
     audioEl.loop = true;
     audioEl.preload = "auto";
     audioEl.volume = 0.6;
-    audioEl.muted = true;
+    audioEl.muted = true; // 진입 시 꺼진 상태
 
+    let unlocked = false;
     const unlock = async () => {
-      try {
-        // 최초 사용자 제스처 시 재생만 시도(음소거 상태는 유지)
-        await audioEl.play();
-        setIsPlaying(true);
-        removeUnlockListeners();
-      } catch (e) {
-        console.error(e);
-      }
-    };
-
-    const addUnlockListeners = () => {
-      document.addEventListener("click", unlock, { once: true });
-      document.addEventListener("touchstart", unlock, { once: true });
-      document.addEventListener("pointerdown", unlock, { once: true });
-    };
-    const removeUnlockListeners = () => {
-      document.removeEventListener("click", unlock);
-      document.removeEventListener("touchstart", unlock);
-      document.removeEventListener("pointerdown", unlock);
-    };
-
-    // 사용자 상호작용 대기
-    addUnlockListeners();
-
-    return () => {
-      removeUnlockListeners();
-      audioEl.pause();
-    };
-  }, [src]);
-
-  // 입장 오버레이가 보내는 이벤트로 즉시 소리 켜기
-  useEffect(() => {
-    const handler = async () => {
-      const audioEl = audioRef.current;
-      if (!audioEl) return;
+      if (unlocked) return;
       try {
         audioEl.muted = false;
         await audioEl.play();
         setIsMuted(false);
         setIsPlaying(true);
-      } catch (e) {
-        console.error(e);
-      }
+        unlocked = true;
+      } catch {}
+      // 한번만 시도하고 리스너 제거
+      document.removeEventListener("pointerdown", unlock, true);
+      document.removeEventListener("touchstart", unlock, true);
+      document.removeEventListener("mousedown", unlock, true);
+      document.removeEventListener("keydown", unlock, true);
     };
-    window.addEventListener("enable-audio", handler, { once: true });
-    return () => window.removeEventListener("enable-audio", handler);
-  }, []);
+
+    // 캡처 단계에서 가장 먼저 가로채 재생 시도 (오버레이가 막아도 동작)
+    document.addEventListener("pointerdown", unlock, { capture: true });
+    document.addEventListener("touchstart", unlock, { capture: true });
+    document.addEventListener("mousedown", unlock, { capture: true });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") unlock();
+    }, { capture: true });
+
+    return () => {
+      document.removeEventListener("pointerdown", unlock, true);
+      document.removeEventListener("touchstart", unlock, true);
+      document.removeEventListener("mousedown", unlock, true);
+      document.removeEventListener("keydown", unlock, true);
+      audioEl.pause();
+    };
+  }, [src]);
+
+  // 불필요한 외부 이벤트 연동 제거
 
   const toggle = async () => {
     const audioEl = audioRef.current;
     if (!audioEl) return;
-    // 재생 상태가 아니면 우선 재생 시도
     if (!isPlaying) {
       try {
         await audioEl.play();
         setIsPlaying(true);
-      } catch (e) {
-        console.error(e);
-      }
+      } catch {}
     }
     const nextMuted = !isMuted;
     audioEl.muted = nextMuted;
     setIsMuted(nextMuted);
-    try {
-      window.dispatchEvent(new CustomEvent("audio-state", { detail: { isMuted: nextMuted } }));
-    } catch {}
   };
-
-  // 외부에서 토글 요청을 받을 수 있도록 이벤트 리스너 추가
+  // 외부 이벤트/라이트박스 연동 제거 (단순 동작만 유지)
   useEffect(() => {
-    const onToggle = () => toggle();
-    const onGetState = () => {
-      try {
-        window.dispatchEvent(new CustomEvent("audio-state", { detail: { isMuted } }));
-      } catch {}
-    };
-    window.addEventListener("audio-toggle", onToggle);
-    window.addEventListener("audio-get-state", onGetState);
     const onLightbox = (e) => setHiddenByLightbox(Boolean(e.detail));
     window.addEventListener("lightbox-open", onLightbox);
-    // 초기 상태 브로드캐스트
-    try {
-      window.dispatchEvent(new CustomEvent("audio-state", { detail: { isMuted } }));
-    } catch {}
-    return () => {
-      window.removeEventListener("audio-toggle", onToggle);
-      window.removeEventListener("audio-get-state", onGetState);
-      window.removeEventListener("lightbox-open", onLightbox);
-    };
-  }, [isMuted]);
+    return () => window.removeEventListener("lightbox-open", onLightbox);
+  }, []);
 
   return (
     <>
@@ -121,14 +85,11 @@ function AudioToggle({ src = "./audio/TrackTribe.mp3" }) {
           onClick={(e) => { e.stopPropagation(); e.preventDefault(); toggle(); }}
           onPointerDown={(e) => { e.stopPropagation(); }}
           sx={{
-            // position: "fixed",
             right: 16,
             bottom: 16,
             zIndex: 2147483647,
             backgroundColor: "white",
             boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-            // 갤러리 라이트박스 때만 숨김 (이 값은 이벤트로 제어)
-            pointerEvents: "auto",
             WebkitTapHighlightColor: "transparent",
             display: "inline-flex",
             alignItems: "center",
