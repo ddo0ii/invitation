@@ -1,28 +1,18 @@
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import CloseIcon from "@mui/icons-material/Close";
-import FullscreenIcon from "@mui/icons-material/Fullscreen";
-import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
-import { Box, Dialog, IconButton, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import "./Gallery.css";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import appConfig from "../app.config";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
 
 function Gallery() {
   const [viewerOpen, setViewerOpen] = useState(false);
   const [current, setCurrent] = useState(0);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const fullscreenRef = useRef(null);
-  const imgRef = useRef(null);
   const scrollRef = useRef(null);
   const isDraggingRef = useRef(false);
   const dragStartXRef = useRef(0);
   const scrollStartLeftRef = useRef(0);
-
-  // 뷰어 스와이프 제어 (한 번의 드래그에 한 번만 이동)
-  const viewerSwipe = useRef({ startX: 0, hasSwiped: false });
-
-  // 이미지 프리로딩 상태 관리
   const preloadedSetRef = useRef(new Set());
   const preloadImage = useCallback((src) => {
     if (!src) return Promise.resolve();
@@ -85,36 +75,10 @@ function Gallery() {
     setViewerOpen(true);
   }, []);
 
-  const handlePrev = useCallback(() => {
-    if (!images.length) return;
-    setCurrent((v) => (v - 1 + images.length) % images.length);
-  }, [images.length]);
-
-  const handleNext = useCallback(() => {
-    if (!images.length) return;
-    setCurrent((v) => (v + 1) % images.length);
-  }, [images.length]);
-
-  const toggleFullscreen = useCallback(async () => {
-    const el = fullscreenRef.current;
-    if (!el) return;
-    try {
-      if (!document.fullscreenElement) {
-        await el.requestFullscreen();
-        setIsFullscreen(true);
-      } else {
-        await document.exitFullscreen();
-        setIsFullscreen(false);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }, []);
-
-  // 현재 기준 근접 이미지(±3장) 선로딩으로 전환 지연 최소화
+  // 현재 기준 근접 이미지(±2장) 선로딩으로 전환 지연 최소화
   useEffect(() => {
     if (!images.length) return;
-    const radius = 3;
+    const radius = 2;
     for (let d = 1; d <= radius; d++) {
       const nextIdx = (current + d) % images.length;
       const prevIdx = (current - d + images.length) % images.length;
@@ -123,44 +87,24 @@ function Gallery() {
     }
   }, [current, images, preloadImage]);
 
-  // 초기 진입 시 상위 몇 장을 preload hint로 올려 초기 체감속도 개선
+  // 초기 진입 시 상위 몇 장을 preload
   useEffect(() => {
     if (!images.length) return;
-    const head = document.head;
-    const links = [];
     const upfront = Math.min(3, images.length);
     for (let i = 0; i < upfront; i++) {
       const href = images[i]?.full;
-      if (!href) continue;
-      const link = document.createElement("link");
-      link.rel = "preload";
-      link.as = "image";
-      link.href = href;
-      head.appendChild(link);
-      links.push(link);
-      // 즉시 미리 내려받기 시작
       preloadImage(href);
     }
-    return () => {
-      links.forEach((l) => {
-        if (l.parentNode) l.parentNode.removeChild(l);
-      });
-    };
   }, [images, preloadImage]);
 
-  // 전체 이미지 백그라운드 프리로딩 (기본 동시 4개, 옵션으로 전체 동시)
+  // 전체 이미지 백그라운드 프리로딩 (동시 3개)
   useEffect(() => {
     if (!images.length) return;
     let cancelled = false;
-    const preloadAllAtOnce = !!(appConfig?.gallery && appConfig.gallery.preloadAllAtOnce);
-    const configuredCap = appConfig?.gallery?.concurrencyCap;
-    const baseCap = preloadAllAtOnce ? images.length : 4;
-    const concurrency = Math.max(1, Math.min(baseCap, Number.isFinite(configuredCap) ? configuredCap : baseCap));
-    // 프리로딩은 기기 픽셀 비율/뷰포트 폭을 고려하여 합리적 해상도 선택
     const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
     const vw = Math.max(document.documentElement.clientWidth || 360, 360);
-    const targetWidth = Math.min(2048, Math.ceil((vw * dpr) / 60) * 60); // 대략적인 버킷팅
-    const pickWidth = widths.reduce((acc, w) => (w >= targetWidth ? Math.min(acc, w) : acc), 2048);
+    const targetWidth = Math.min(1440, Math.ceil((vw * dpr) / 60) * 60);
+    const pickWidth = widths.reduce((acc, w) => (w >= targetWidth ? Math.min(acc, w) : acc), 1440);
     const srcList = images.map((i) => buildResizedPath(i.full, pickWidth) || i.full).filter(Boolean);
     let cursor = 0;
 
@@ -168,33 +112,33 @@ function Gallery() {
       while (!cancelled && cursor < srcList.length) {
         const index = cursor++;
         const src = srcList[index];
-        // 이미 선로딩된 경우 skip
         if (preloadedSetRef.current.has(src)) continue;
-        // 순차적으로 한 장씩 받아서 캐시 채우기
-        // 오류여도 캐시에 남거나 다음으로 진행
         // eslint-disable-next-line no-await-in-loop
         await preloadImage(src);
       }
     };
 
-    const runners = Array.from({ length: Math.min(concurrency, srcList.length) }, run);
+    const runners = Array.from({ length: Math.min(3, srcList.length) }, run);
     Promise.allSettled(runners);
-
     return () => {
       cancelled = true;
     };
   }, [images, preloadImage]);
 
-  useEffect(() => {
-    const onKey = (e) => {
-      if (!viewerOpen) return;
-      if (e.key === "ArrowLeft") handlePrev();
-      if (e.key === "ArrowRight") handleNext();
-      if (e.key === "Escape") setViewerOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [viewerOpen, handlePrev, handleNext]);
+  // Lightbox 슬라이드 구성 (responsive srcset 포함)
+  const slides = useMemo(() => {
+    return images.map((pair, idx) => {
+      const src = buildResizedPath(pair.full, 1440) || pair.full;
+      const srcSet = [];
+      if (widths.includes(600)) srcSet.push({ src: buildResizedPath(pair.full, 600) || pair.full, width: 600 });
+      if (widths.includes(900)) srcSet.push({ src: buildResizedPath(pair.full, 900) || pair.full, width: 900 });
+      if (widths.includes(1440)) srcSet.push({ src: buildResizedPath(pair.full, 1440) || pair.full, width: 1440 });
+      if (widths.includes(2048)) srcSet.push({ src: buildResizedPath(pair.full, 2048) || pair.full, width: 2048 });
+      return { src, srcSet, sizes: sizesAttr, alt: `gallery-${idx + 1}` };
+    });
+  }, [images, widths]);
+
+  // Lightbox가 자체적으로 키보드(좌/우/ESC) 네비게이션을 처리하므로 별도 핸들러 불필요
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -257,130 +201,18 @@ function Gallery() {
           </Box>
         ))}
       </Box>
-
-      <Dialog open={viewerOpen} onClose={() => setViewerOpen(false)} fullScreen>
-        <Box
-          ref={fullscreenRef}
-          sx={{
-            position: "relative",
-            width: "100%",
-            height: "100%",
-            backgroundColor: "black",
-            overflow: "hidden",
-          }}
-        >
-          {/* 드래그/클릭 네비게이션 */}
-          <Box
-            className="viewer__hit"
-            onPointerDown={(e) => {
-              viewerSwipe.current.startX = e.clientX;
-              viewerSwipe.current.hasSwiped = false;
-            }}
-            onPointerMove={(e) => {
-              if (e.buttons !== 1) return; // only while pressing
-              if (viewerSwipe.current.hasSwiped) return;
-              const dx = e.clientX - viewerSwipe.current.startX;
-              if (Math.abs(dx) > 60) {
-                if (dx > 0) handlePrev();
-                else handleNext();
-                viewerSwipe.current.hasSwiped = true;
-              }
-            }}
-            onPointerUp={(e) => {
-              const dx = e.clientX - viewerSwipe.current.startX;
-              if (!viewerSwipe.current.hasSwiped && Math.abs(dx) < 30) {
-                // 탭처럼 클릭 영역으로 이동
-                const w = e.currentTarget.clientWidth;
-                if (e.clientX < w * 0.33) handlePrev();
-                else if (e.clientX > w * 0.67) handleNext();
-              }
-            }}
-          />
-          <IconButton
-            aria-label="fullscreen"
-            onClick={toggleFullscreen}
-            className="viewer__btn viewer__btn--fs"
-            sx={{ position: "absolute", bottom: 16, right: 16, zIndex: 3 }}
-          >
-            {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
-          </IconButton>
-          <IconButton
-            aria-label="close"
-            onClick={() => setViewerOpen(false)}
-            className="viewer__btn viewer__btn--close"
-            sx={{ position: "absolute", top: 16, right: 16, zIndex: 3 }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <Box
-            sx={{
-              position: "absolute",
-              inset: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              pointerEvents: "none",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Box
-                key={images[current]?.full}
-                ref={imgRef}
-                component="img"
-                src={buildResizedPath(images[current]?.full, 1440) || images[current]?.full}
-                srcSet={buildSrcSet(images[current])}
-                sizes={sizesAttr}
-                alt={`gallery-${current + 1}`}
-                className="viewer__img"
-                fetchPriority="high"
-                style={{ pointerEvents: "auto" }}
-              />
-              <Typography
-                className="viewer__count"
-                style={{ pointerEvents: "auto" }}
-              >
-                {current + 1} / {images.length}
-              </Typography>
-            </Box>
-          </Box>
-
-          {/* 화살표 버튼 - 컨테이너 기준 절대배치 */}
-          <IconButton
-            aria-label="prev"
-            onClick={handlePrev}
-            className="viewer__btn viewer__btn--prev"
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: 16,
-              transform: "translateY(-50%)",
-              zIndex: 3,
-            }}
-          >
-            <ChevronLeftIcon fontSize="large" />
-          </IconButton>
-          <IconButton
-            aria-label="next"
-            onClick={handleNext}
-            className="viewer__btn viewer__btn--next"
-            sx={{
-              position: "absolute",
-              top: "50%",
-              right: 16,
-              transform: "translateY(-50%)",
-              zIndex: 3,
-            }}
-          >
-            <ChevronRightIcon fontSize="large" />
-          </IconButton>
-        </Box>
-      </Dialog>
+      <Lightbox
+        open={viewerOpen}
+        close={() => setViewerOpen(false)}
+        index={current}
+        slides={slides}
+        plugins={[Zoom]}
+        carousel={{ finite: true, preload: 3 }}
+        controller={{ closeOnBackdropClick: true }}
+        animation={{ fade: 300 }}
+        render={{}}
+        zoom={{ maxZoomPixelRatio: 3, doubleTapDelay: 250, doubleClickMaxStops: 2 }}
+      />
     </Box>
   );
 }
