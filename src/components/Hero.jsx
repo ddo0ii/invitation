@@ -23,6 +23,16 @@ function Hero() {
     const vw = Math.max(document.documentElement.clientWidth || 360, 360);
     const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
     const effective = vw * dpr;
+    const connection = navigator.connection || navigator.webkitConnection || navigator.mozConnection;
+    const effectiveType = connection?.effectiveType || '4g';
+    const saveData = Boolean(connection?.saveData);
+    // 데이터 절약 모드 또는 느린 네트워크면 시작 화질 보수적으로
+    if (saveData || effectiveType === '2g' || effectiveType === 'slow-2g') {
+      return './video/variants/intro-360.mp4';
+    }
+    if (effectiveType === '3g') {
+      return './video/variants/intro-480.mp4';
+    }
     // 모바일 선명도 향상: 480p/720p 우선, 고해상도는 1080p
     if (effective <= 500) return './video/variants/intro-480.mp4';
     if (effective <= 900) return './video/variants/intro-720.mp4';
@@ -61,12 +71,14 @@ function Hero() {
   }, []);
   useEffect(() => {
     // 비디오를 가장 먼저 받도록 preload hint 추가
-    const link = document.createElement("link");
-    link.rel = "preload";
-    link.as = "video";
-    link.href = pickVariant;
-    link.type = "video/mp4";
-    document.head.appendChild(link);
+    const webmHref = pickVariant.replace('.mp4', '.webm');
+    const linkWebm = document.createElement("link");
+    linkWebm.rel = "preload";
+    linkWebm.as = "video";
+    linkWebm.href = webmHref;
+    linkWebm.type = "video/webm";
+    linkWebm.fetchPriority = 'high';
+    document.head.appendChild(linkWebm);
     // 페이지 진입 즉시 재생 시도 (정책상 muted/inline 필요 - 이미 설정됨)
     const tryPlay = () => attemptAutoplay();
     // 약간 지연 후 한 번 더 시도 (소스 연결 직후)
@@ -82,7 +94,7 @@ function Hero() {
     window.addEventListener('keydown', onUserGesture, { once: true });
     window.addEventListener('touchstart', onUserGesture, { once: true });
     return () => {
-      if (link.parentNode) link.parentNode.removeChild(link);
+      if (linkWebm.parentNode) linkWebm.parentNode.removeChild(linkWebm);
       window.removeEventListener('pointerdown', onUserGesture);
       window.removeEventListener('keydown', onUserGesture);
       window.removeEventListener('touchstart', onUserGesture);
@@ -133,6 +145,7 @@ function Hero() {
           playsInline
           preload="auto"
           ref={videoRef}
+          poster="./video/poster.jpg"
           onCanPlay={() => {
             attemptAutoplay();
           }}
