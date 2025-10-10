@@ -93,7 +93,7 @@ function AudioToggle({ src = "./audio/TrackTribe.mp3" }) {
           aria-label={isMuted ? "배경음악 켜기" : "배경음악 끄기"}
           onClick={toggle}
           sx={{
-            position: "fixed",
+            // position: "fixed",
             right: 16,
             bottom: 16,
             zIndex: 20000,

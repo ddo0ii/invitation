@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import appConfig from "../app.config";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
-import Zoom from "yet-another-react-lightbox/plugins/zoom";
+import PinchZoomSlide from "./PinchZoomSlide";
 
 function Gallery() {
   const [viewerOpen, setViewerOpen] = useState(false);
@@ -206,12 +206,14 @@ function Gallery() {
         close={() => setViewerOpen(false)}
         index={current}
         slides={slides}
-        plugins={[Zoom]}
         carousel={{ finite: true, preload: 3 }}
         controller={{ closeOnBackdropClick: true }}
         animation={{ fade: 300 }}
-        render={{}}
-        zoom={{ maxZoomPixelRatio: 3, doubleTapDelay: 250, doubleClickMaxStops: 2 }}
+        render={{
+          slide: ({ slide, rect, index }) => (
+            <PinchZoomSlide src={slide.src} alt={slide.alt} onClick={() => {}} />
+          ),
+        }}
       />
     </Box>
   );
