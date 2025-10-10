@@ -132,8 +132,9 @@ function RSVPDialog() {
       month: "long",
       day: "numeric",
       weekday: "long",
-      hour: "numeric",
+      hour: "2-digit",
       minute: "2-digit",
+      hour12: false,
     });
   }, []);
 

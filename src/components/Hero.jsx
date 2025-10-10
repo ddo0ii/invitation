@@ -183,8 +183,9 @@ function Hero() {
             month: "2-digit",
             day: "2-digit",
             weekday: "long",
-            hour: "numeric",
+            hour: "2-digit",
             minute: "2-digit",
+            hour12: false,
           })}
         </Typography>
         <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} color="text.secondary">

@@ -36,7 +36,7 @@ function Location() {
       </Stack>
       <KakaoMap
         address={appConfig.site.mapAddress}
-        markerText={appConfig.site.venue}
+        markerText={appConfig.site.venueName}
       />
       <Stack direction="row" spacing={1} justifyContent="center">
         <Button

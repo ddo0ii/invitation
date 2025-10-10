@@ -4,6 +4,7 @@ const appConfig = {
     title: "OUR WEDDING",
     dateTime: "2025-12-06T12:00:00+09:00",
     venue: "페어몬트 앰배서더 서울 호텔",
+    venueName: "페어몬트 앰배서더 서울",
     address: "서울 영등포구 여의대로 108",
     mapAddress: "서울 영등포구 여의대로 108 페어몬트 앰배서더 서울 호텔",
     mainCharacterEn: "Myungjun and Soyeong",
