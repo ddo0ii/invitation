@@ -7,6 +7,7 @@ function AudioToggle({ src = "./audio/TrackTribe.mp3" }) {
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
+  const [hiddenByLightbox, setHiddenByLightbox] = useState(false);
 
   // 오디오 설정 + 사용자 상호작용 대기
   useEffect(() => {
@@ -19,10 +20,9 @@ function AudioToggle({ src = "./audio/TrackTribe.mp3" }) {
 
     const unlock = async () => {
       try {
-        audioEl.muted = false;
+        // 최초 사용자 제스처 시 재생만 시도(음소거 상태는 유지)
         await audioEl.play();
         setIsPlaying(true);
-        setIsMuted(false);
         removeUnlockListeners();
       } catch (e) {
         console.error(e);
@@ -82,24 +82,54 @@ function AudioToggle({ src = "./audio/TrackTribe.mp3" }) {
     const nextMuted = !isMuted;
     audioEl.muted = nextMuted;
     setIsMuted(nextMuted);
+    try {
+      window.dispatchEvent(new CustomEvent("audio-state", { detail: { isMuted: nextMuted } }));
+    } catch {}
   };
+
+  // 외부에서 토글 요청을 받을 수 있도록 이벤트 리스너 추가
+  useEffect(() => {
+    const onToggle = () => toggle();
+    const onGetState = () => {
+      try {
+        window.dispatchEvent(new CustomEvent("audio-state", { detail: { isMuted } }));
+      } catch {}
+    };
+    window.addEventListener("audio-toggle", onToggle);
+    window.addEventListener("audio-get-state", onGetState);
+    const onLightbox = (e) => setHiddenByLightbox(Boolean(e.detail));
+    window.addEventListener("lightbox-open", onLightbox);
+    // 초기 상태 브로드캐스트
+    try {
+      window.dispatchEvent(new CustomEvent("audio-state", { detail: { isMuted } }));
+    } catch {}
+    return () => {
+      window.removeEventListener("audio-toggle", onToggle);
+      window.removeEventListener("audio-get-state", onGetState);
+      window.removeEventListener("lightbox-open", onLightbox);
+    };
+  }, [isMuted]);
 
   return (
     <>
-      <audio ref={audioRef} src={src} playsInline autoPlay muted />
+      <audio ref={audioRef} src={src} playsInline autoPlay muted={isMuted} />
       <Portal container={document.body}>
         <Fab
+          data-audio-toggle
           color="default"
           aria-label={isMuted ? "배경음악 켜기" : "배경음악 끄기"}
-          onClick={toggle}
+          onClick={(e) => { e.stopPropagation(); e.preventDefault(); toggle(); }}
+          onPointerDown={(e) => { e.stopPropagation(); }}
           sx={{
             // position: "fixed",
             right: 16,
             bottom: 16,
-            zIndex: 20000,
+            zIndex: 2147483647,
             backgroundColor: "white",
             boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            // 갤러리 라이트박스 때만 숨김 (이 값은 이벤트로 제어)
             pointerEvents: "auto",
+            WebkitTapHighlightColor: "transparent",
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
@@ -119,6 +149,9 @@ function AudioToggle({ src = "./audio/TrackTribe.mp3" }) {
               transform: 'translate(-50%, -50%)',
               fontSize: 24,
             },
+            opacity: hiddenByLightbox ? 0 : 1,
+            pointerEvents: hiddenByLightbox ? 'none' : 'auto',
+            transition: 'opacity 160ms ease',
           }}
         >
           {isMuted ? <VolumeOffIcon /> : <VolumeUpIcon />}

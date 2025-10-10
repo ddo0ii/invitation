@@ -75,6 +75,13 @@ function Gallery() {
     setViewerOpen(true);
   }, []);
 
+  // 라이트박스 열림/닫힘 상태를 전역으로 알림 → 오디오 토글 표시/숨김 제어
+  useEffect(() => {
+    try {
+      window.dispatchEvent(new CustomEvent('lightbox-open', { detail: viewerOpen }));
+    } catch {}
+  }, [viewerOpen]);
+
   // 현재 기준 근접 이미지(±2장) 선로딩으로 전환 지연 최소화
   useEffect(() => {
     if (!images.length) return;
@@ -213,6 +220,16 @@ function Gallery() {
           slide: ({ slide, rect, index }) => (
             <PinchZoomSlide src={slide.src} alt={slide.alt} onClick={() => {}} />
           ),
+        }}
+        on={{
+          click: () => {},
+          pointerDown: (e) => {
+            // 라이트박스 레이어가 우선 처리하지 않도록 오디오 토글 버튼 영역 클릭 시 무시
+            const target = e.target;
+            if (target.closest && target.closest('[data-audio-toggle]')) {
+              e.stopPropagation();
+            }
+          },
         }}
       />
     </Box>
