@@ -34,7 +34,7 @@ const KakaoShare = () => {
       objectType: "feed",
       content: {
         title: "강명준💗권소영 결혼합니다",
-        description: "2025년 12월 6일 (토) 오후 12시\n페어몬트 앰배서더 서울 호텔",
+        description: "2025년 12월 6일 (토) 12시\n페어몬트 앰배서더 서울 호텔",
         imageUrl: "https://ddo0ii.github.io/invitation/image/2536.jpg",
         link: {
           mobileWebUrl: "https://ddo0ii.github.io/invitation/",
